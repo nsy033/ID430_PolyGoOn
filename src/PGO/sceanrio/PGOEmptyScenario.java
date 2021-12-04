@@ -4,6 +4,7 @@ import PGO.PGOScene;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import javax.swing.event.ChangeEvent;
 import x.XApp;
 import x.XScenario;
 
@@ -87,6 +88,10 @@ public class PGOEmptyScenario extends XScenario {
 
         @Override
         public void wrapUp() {
+        }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
         }
     }
 }

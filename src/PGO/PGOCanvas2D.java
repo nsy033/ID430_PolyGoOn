@@ -6,7 +6,6 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
@@ -61,6 +60,9 @@ public class PGOCanvas2D extends JPanel {
         this.drawDraggedPolygon(gfx2);
         this.drawSelectedPolygons(gfx2);
         this.drawInfo(gfx2);
+        
+        PGOScene curScene = (PGOScene) this.mPGO.getScenarioMgr().getCurScene();
+        curScene.renderScreenObjects(gfx2);
     }
 
     private void drawPolygons(Graphics2D gfx2) {
@@ -131,7 +133,6 @@ public class PGOCanvas2D extends JPanel {
         int nPts = 3;
         int[] xPts = new int[nPts];
         int[] yPts = new int[nPts];
-        Point gravity = this.mPGO.getCalcMgr().calcGravityPt(pts);
         for (int i = 0; i < pts.size(); i++) {
             Point pt = pts.get(i);
             xPts[i] = pt.x;
@@ -176,6 +177,6 @@ public class PGOCanvas2D extends JPanel {
         gfx2.setFont(PGOCanvas2D.FONT_INFO);
         
         gfx2.drawString(str, PGOCanvas2D.INFO_TOP_ALIGNMENT_X,
-                            PGOCanvas2D.INFO_TOP_ALIGNMENT_Y);
+            PGOCanvas2D.INFO_TOP_ALIGNMENT_Y);
     }
 }

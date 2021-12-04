@@ -1,17 +1,15 @@
 package PGO.sceanrio;
 
 import PGO.PGO;
-import PGO.PGOCanvas2D;
 import PGO.PGOScene;
+import javax.swing.event.ChangeEvent;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import javax.imageio.ImageIO;
-import javax.swing.JLabel;
 import x.XApp;
 import x.XCmdToChangeScene;
 import x.XScenario;
@@ -102,7 +100,7 @@ public class PGOSaveScenario extends XScenario {
                     } catch (IOException exp) {
                         exp.printStackTrace();
                     }
-                   pgo.getCanvas2D().setOpaque(false);
+                    pgo.getCanvas2D().setOpaque(false);
                     pgo.getImageLabel().setVisible(true);
                     
                     XCmdToChangeScene.execute(pgo,
@@ -130,6 +128,10 @@ public class PGOSaveScenario extends XScenario {
 
         @Override
         public void wrapUp() {
+        }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
         }
     }
 }

@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import javax.swing.event.ChangeEvent;
 import x.XApp;
 import x.XCmdToChangeScene;
 import x.XScenario;
@@ -38,6 +39,8 @@ public class PGODeleteScenario extends XScenario {
         this.addScene(PGODeleteScenario.DeleteScene.createSingleton(this));
     }
     
+    
+    private PGOPolygon draggedPolygon = null;
     private Point firstLocation = null;
     private Point lastLocation = null;
 
@@ -128,6 +131,10 @@ public class PGODeleteScenario extends XScenario {
 
         @Override
         public void wrapUp() {
+        }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
         }
     }
     
@@ -222,6 +229,11 @@ public class PGODeleteScenario extends XScenario {
 
         @Override
         public void wrapUp() {
+        }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 }

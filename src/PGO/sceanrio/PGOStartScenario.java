@@ -6,6 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
@@ -17,6 +19,7 @@ import static java.lang.Double.min;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.event.ChangeEvent;
 import x.XApp;
 import x.XCmdToChangeScene;
 import x.XScenario;
@@ -160,6 +163,7 @@ public class PGOStartScenario extends XScenario {
             int width = (int) (imgWidth * d);
             int height = (int) (imgHeight * d);
             ImageIcon imageIcon = new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_DEFAULT));
+            pgo.setImageLabel(imageIcon);
             
             this.mImageLabel = new JLabel();
             this.mImageLabel.setIcon(imageIcon);
@@ -179,8 +183,8 @@ public class PGOStartScenario extends XScenario {
 //            pgo.setFrameHeight(height);
             pgo.getFrame().setSize(width, height);
             pgo.getFrame().setLocationRelativeTo(null);
-            pgo.getFrame().add(pgo.getTranslucentPane());
-            pgo.getFrame().add(this.mImageLabel);
+            pgo.getFrame().add(pgo.getTranslucentPane(), BorderLayout.CENTER);
+            pgo.getFrame().add(this.mImageLabel, BorderLayout.CENTER);
         }
 
         @Override
@@ -201,6 +205,10 @@ public class PGOStartScenario extends XScenario {
 
         @Override
         public void wrapUp() {
+        }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
         }
     }
     

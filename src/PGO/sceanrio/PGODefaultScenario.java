@@ -5,12 +5,14 @@ import PGO.PGOCanvas2D;
 import PGO.PGOPolygon;
 import PGO.PGOPolygonMgr;
 import PGO.PGOScene;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.JLabel;
+import javax.swing.event.ChangeEvent;
 import x.XApp;
 import x.XCmdToChangeScene;
 import x.XScenario;
@@ -100,7 +102,14 @@ public class PGODefaultScenario extends XScenario {
                         PGODeformScenario.DeformReadyScene.getSingleton(),
                         this);
                     break;
+                case KeyEvent.VK_D:
+                    XCmdToChangeScene.execute(pgo,
+                        PGODeleteScenario.DeleteReadyScene.getSingleton(),
+                        this);
+                    break;
                 case KeyEvent.VK_C:
+                    Dimension prevSize = pgo.getFrame().size();
+                    pgo.getFrame().setSize(prevSize.width, prevSize.height + pgo.SLIDER_HEIGHT);
                     XCmdToChangeScene.execute(pgo,
                         PGOColorScenario.ColorReadyScene.getSingleton(),
                         this);
@@ -163,6 +172,10 @@ public class PGODefaultScenario extends XScenario {
 
         @Override
         public void wrapUp() {
+        }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
         }
     }
     
@@ -230,6 +243,10 @@ public class PGODefaultScenario extends XScenario {
 
         @Override
         public void wrapUp() {
+        }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
         }
     }
     

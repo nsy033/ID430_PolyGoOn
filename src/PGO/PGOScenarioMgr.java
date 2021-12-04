@@ -17,6 +17,7 @@ public class PGOScenarioMgr extends XScenarioMgr {
         this.mScenarios.add(PGODeformScenario.createSingleton(this.mApp));
         this.mScenarios.add(PGOColorScenario.createSingleton(this.mApp));
         this.mScenarios.add(PGOSaveScenario.createSingleton(this.mApp));
+        this.mScenarios.add(PGOCopyScenario.createSingleton(this.mApp));
     }
 
     @Override

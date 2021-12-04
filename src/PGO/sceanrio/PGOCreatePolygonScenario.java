@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.event.ChangeEvent;
 import x.XApp;
 import x.XCmdToChangeScene;
 import x.XScenario;
@@ -123,6 +124,10 @@ public class PGOCreatePolygonScenario extends XScenario {
         @Override
         public void wrapUp() {
         }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
+        }
     }
     
     public static class SecondPtReadyScene extends PGOScene {
@@ -211,6 +216,10 @@ public class PGOCreatePolygonScenario extends XScenario {
         @Override
         public void wrapUp() {
         }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
+        }
     }
     
     public static class SetSecondPtScene extends PGOScene {
@@ -292,6 +301,10 @@ public class PGOCreatePolygonScenario extends XScenario {
 
         @Override
         public void wrapUp() {
+        }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
         }
     }
     
@@ -393,6 +406,10 @@ public class PGOCreatePolygonScenario extends XScenario {
         @Override
         public void wrapUp() {
         }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
+        }
     }
     
     public static class SetThirdPtScene extends PGOScene {
@@ -493,6 +510,10 @@ public class PGOCreatePolygonScenario extends XScenario {
 
         @Override
         public void wrapUp() {
+        }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
         }
     }
 }

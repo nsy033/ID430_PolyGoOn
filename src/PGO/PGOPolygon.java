@@ -9,8 +9,6 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 public class PGOPolygon {

@@ -1,6 +1,5 @@
 package PGO;
 
-import PGO.sceanrio.PGODefaultScenario;
 import PGO.sceanrio.PGODeleteScenario;
 import java.awt.Point;
 import java.awt.event.KeyEvent;

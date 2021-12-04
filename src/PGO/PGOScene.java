@@ -1,9 +1,9 @@
 package PGO;
 
 import java.awt.Graphics2D;
-import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import javax.swing.event.ChangeEvent;
 import x.XScenario;
 import x.XScene;
 
@@ -19,6 +19,7 @@ public abstract class PGOScene extends XScene{
     public abstract void handleMouseRelease(MouseEvent e);
     public abstract void handleKeyDown(KeyEvent e);
     public abstract void handleKeyUp(KeyEvent e);
+    public abstract void handleChange(ChangeEvent e);
     // public abstract void handleDragDrop(DropTargetDropEvent ev);
     
     // Other abstract methods

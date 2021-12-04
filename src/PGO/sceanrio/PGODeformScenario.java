@@ -11,6 +11,7 @@ import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import javax.swing.event.ChangeEvent;
 import x.XApp;
 import x.XCmdToChangeScene;
 import x.XScenario;
@@ -173,6 +174,10 @@ public class PGODeformScenario extends XScenario {
 
         @Override
         public void wrapUp() {
+        }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
         }
     }
     
@@ -379,6 +384,10 @@ public class PGODeformScenario extends XScenario {
         @Override
         public void wrapUp() {
         }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
+        }
     }
     
     public static class SeparateReadyScene extends PGOScene {
@@ -477,6 +486,10 @@ public class PGODeformScenario extends XScenario {
 
         @Override
         public void wrapUp() {
+        }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
         }
     }
     public static class ChooseVertexScene extends PGOScene {
@@ -588,6 +601,10 @@ public class PGODeformScenario extends XScenario {
 
         @Override
         public void wrapUp() {
+        }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
         }
     }
     
@@ -706,6 +723,11 @@ public class PGODeformScenario extends XScenario {
 
         @Override
         public void wrapUp() {
+        }
+
+        @Override
+        public void handleChange(ChangeEvent e) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 }
