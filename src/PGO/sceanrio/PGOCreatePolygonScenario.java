@@ -1,18 +1,24 @@
 package PGO.sceanrio;
 
 import PGO.PGO;
+import PGO.PGOCalcMgr;
 import PGO.PGOPolygon;
 import PGO.PGOPolygonMgr;
 import PGO.PGOScene;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.Stroke;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.event.ChangeEvent;
 import x.XApp;
 import x.XCmdToChangeScene;

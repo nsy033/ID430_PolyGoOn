@@ -1,6 +1,7 @@
 package PGO.sceanrio;
 
 import PGO.PGO;
+import PGO.PGOCanvas2D;
 import PGO.PGOPolygon;
 import PGO.PGOPolygonMgr;
 import PGO.PGOScene;
@@ -10,6 +11,7 @@ import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import x.XApp;
 import x.XCmdToChangeScene;
@@ -57,6 +59,8 @@ public class PGODefaultScenario extends XScenario {
         private ReadyScene(XScenario scenario) {
             super(scenario);
         }
+        
+        private boolean mCtrlPressed = false;
 
         @Override
         public void handleMousePress(MouseEvent e) {
@@ -71,6 +75,10 @@ public class PGODefaultScenario extends XScenario {
                 
                 XCmdToChangeScene.execute(pgo,
                     PGOCreatePolygonScenario.SetFirstPtScene.getSingleton(),
+                    this);
+            } else {
+                XCmdToChangeScene.execute(pgo,
+                    PGODeleteScenario.DeleteReadyScene.getSingleton(),
                     this);
             }
         }
@@ -112,11 +120,38 @@ public class PGODefaultScenario extends XScenario {
                         PGODefaultScenario.ImageHideScene.getSingleton(),
                         this);
                     break;
+                case KeyEvent.VK_CONTROL:
+                    this.mCtrlPressed = true;
+                    break;
             }
         }
 
         @Override
         public void handleKeyUp(KeyEvent e) {
+            PGO pgo = (PGO) this.mScenario.getApp();
+            int code = e.getKeyCode();
+            
+            switch (code) {
+                case KeyEvent.VK_CONTROL:
+                    this.mCtrlPressed = false;
+                    break;
+                case KeyEvent.VK_S:
+                    if (this.mCtrlPressed) {
+                        pgo.getImageLabel().setVisible(false);
+
+                        pgo.setTextLabel(new JLabel("Press Enter to save your art"));
+                        pgo.getTextLabel().setFont(PGOCanvas2D.FONT_INFO);
+                        pgo.getTextLabel().setVerticalAlignment(JLabel.CENTER);
+                        pgo.getTextLabel().setHorizontalAlignment(JLabel.CENTER);
+                        
+                        pgo.getCanvas2D().setOpaque(true);
+                        pgo.getCanvas2D().add(pgo.getTextLabel());
+                        
+                        XCmdToChangeScene.execute(pgo,
+                            PGOSaveScenario.SaveReadyScene.getSingleton(),
+                            null);
+                    }
+            }
         }
 
         @Override

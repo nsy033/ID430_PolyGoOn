@@ -1,8 +1,9 @@
-package PGO;
+ package PGO;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.BorderLayout;
 import java.awt.dnd.DropTarget;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -12,7 +13,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.event.ChangeListener;
 import x.XApp;
 import x.XLogMgr;
 import x.XScenarioMgr;
@@ -23,6 +23,13 @@ public class PGO extends XApp {
     private JFrame mFrame = null;
     public JFrame getFrame() {
         return this.mFrame;
+    }
+    private Rectangle mDeleteArea = null;
+    public Rectangle getDeleteArea() {
+        return this.mDeleteArea;
+    }
+    public void setDeleteArea(Rectangle area) {
+        this.mDeleteArea = area;
     }
     
     private PGOCanvas2D mCanvas2D = null;
@@ -51,6 +58,17 @@ public class PGO extends XApp {
     public JLabel getTextLabel() {
         return this.mTextLabel;
     }
+    public void setTextLabel(JLabel label) {
+        this.mTextLabel = label;
+    }
+    private String mFilePath = null;
+    public String getFilePath() {
+        return this.mFilePath;
+    }
+    public void setFilePath(String filepath) {
+        this.mFilePath = filepath;
+    }
+            
     
     private JPanel hsbPanel = null;
     public JPanel getHSBPanel() {
@@ -146,8 +164,10 @@ public class PGO extends XApp {
         this.mTranslucentPane.setVisible(false);
         this.mCanvas2D.setOpaque(false);
         this.mTextLabel.setFont(PGOCanvas2D.FONT_INFO);
+        this.mTextLabel.setBackground(new Color(0,0,0,30));
         this.mTextLabel.setVerticalAlignment(JLabel.CENTER);
         this.mTextLabel.setHorizontalAlignment(JLabel.CENTER);
+        
         this.hsbPanel.add(new JLabel("Hue"));
         this.hsbPanel.add(hueSlider, BorderLayout.CENTER);
         this.hsbPanel.add(new JLabel("Saturation"));

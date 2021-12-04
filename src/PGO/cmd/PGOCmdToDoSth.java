@@ -1,6 +1,5 @@
 package PGO.cmd;
 
-import PGO.PGO;
 import x.XApp;
 import x.XLoggableCmd;
 

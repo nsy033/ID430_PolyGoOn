@@ -184,6 +184,14 @@ public class PGOCalcMgr {
         return true;
     }
     
+    public Point calcGravityPt(ArrayList<Point> pts) {
+        Point pt1 = pts.get(0);
+        Point pt2 = pts.get(1);
+        Point pt3 = pts.get(2);
+        
+        return new Point((pt1.x + pt2.x + pt3.x)/3, (pt1.y + pt2.y + pt3.y)/3);
+    }
+    
     // constructor
     public PGOCalcMgr(PGO pgo) {
         this.mPGO = pgo;

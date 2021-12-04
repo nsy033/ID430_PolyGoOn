@@ -1,6 +1,5 @@
 package PGO;
 
-import PGO.sceanrio.PGOColorScenario;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 

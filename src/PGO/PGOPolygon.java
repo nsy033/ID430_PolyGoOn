@@ -9,8 +9,6 @@ import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 public class PGOPolygon {
@@ -110,7 +108,7 @@ public class PGOPolygon {
         Point pt1 = pts.get(0);
         Point pt2 = pts.get(1);
         Point pt3 = pts.get(2);
-        Point gravity = new Point((pt1.x + pt2.x + pt3.x)/3, (pt1.y + pt2.y + pt3.y)/3);
+        Point gravity = pgo.getCalcMgr().calcGravityPt(pts);
         
         int pt1RGB = bImg.getRGB((pt1.x + gravity.x)/2, (pt1.y + gravity.y)/2);
         int pt2RGB = bImg.getRGB((pt2.x + gravity.x)/2, (pt2.y + gravity.y)/2);

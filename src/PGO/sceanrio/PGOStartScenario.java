@@ -2,10 +2,12 @@ package PGO.sceanrio;
 
 import PGO.PGO;
 import PGO.PGOScene;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
@@ -93,6 +95,7 @@ public class PGOStartScenario extends XScenario {
                     if (this.mImageLabel != null) {
                         pgo.setImageLabel(this.mImageLabel);
                         pgo.getTranslucentPane().setVisible(true);
+                        pgo.setFilePath(this.mPrevPath);
                         XCmdToChangeScene.execute(pgo,
                             PGODefaultScenario.ReadyScene.getSingleton(), null);
                     }
@@ -166,6 +169,14 @@ public class PGOStartScenario extends XScenario {
             this.mImageLabel.setIcon(imageIcon);
             this.mImageLabel.setVerticalAlignment(JLabel.CENTER);
             this.mImageLabel.setHorizontalAlignment(JLabel.CENTER);
+            if (pgo.getDeleteArea() != null) {
+                pgo.setDeleteArea(null);
+            }
+            pgo.setDeleteArea(new Rectangle(width, height, 0, 0));
+            Point pt = new Point();
+            pt.x = (int) (width * 0.87);
+            pt.y = (int) (height * 0.65);
+            pgo.getDeleteArea().add(pt);
             pgo.getCanvas2D().setSize(width, height);
             pgo.getTranslucentPane().setSize(width, height);
 //            pgo.setFrameWidth(width);

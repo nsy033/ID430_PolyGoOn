@@ -63,23 +63,37 @@ public class PGODeleteScenario extends XScenario {
         
         @Override
         public void handleMousePress(MouseEvent e) {
+        }
+        
+         public void handleMouseLongPress(Point pressedPt, Point pt) {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGODeleteScenario scenario = PGODeleteScenario.getSingleton();
-            Point pt = e.getPoint();
-            Point2D.Double pt2d = new Point2D.Double((double) pt.x, (double) pt.y);
+            boolean contained = false;
             for (PGOPolygon polygon : pgo.getPolygonMgr().getPolygons()) {
-                if (pgo.getCalcMgr().contained(pt2d, polygon)) {
-                    scenario.draggedPolygon = polygon;
-                    scenario.firstLocation = pt;
-                    scenario.lastLocation = pt;
-                    
-                    XCmdToChangeScene.execute(pgo,
-                        PGODeleteScenario.DeleteScene.getSingleton(),
-                        this.mReturnScene);
-                    break;
+                if (pgo.getCalcMgr().contained(pressedPt, polygon)) {
+                    if (pgo.getCalcMgr().contained(pt, polygon)) {
+                        pgo.getPolygonMgr().setDraggedPolygon(polygon);
+                        pgo.getPolygonMgr().getPolygons().remove(pgo.getPolygonMgr().getDraggedPolygon());
+
+                        scenario.firstLocation = pressedPt;
+                        scenario.lastLocation = pressedPt;
+                        
+                        contained = true;
+                        break;
+                    } else {
+                        break;
+                    }
                 }
             }
-        }
+            if (contained) {
+                XCmdToChangeScene.execute(pgo,
+                            PGODeleteScenario.DeleteScene.getSingleton(),
+                            this.mReturnScene);
+            } else {
+                XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
+            }
+            
+         }
 
         @Override
         public void handleMouseDrag(MouseEvent e) {
@@ -87,6 +101,8 @@ public class PGODeleteScenario extends XScenario {
 
         @Override
         public void handleMouseRelease(MouseEvent e) {
+            PGO pgo = (PGO) this.mScenario.getApp();
+            XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
         }
 
         @Override
@@ -95,14 +111,6 @@ public class PGODeleteScenario extends XScenario {
 
         @Override
         public void handleKeyUp(KeyEvent e) {
-            PGO pgo = (PGO) this.mScenario.getApp();
-            int code = e.getKeyCode();
-            
-            switch (code) {
-                case KeyEvent.VK_D:
-                    XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
-                    break;
-            }
         }
 
         @Override
@@ -153,10 +161,11 @@ public class PGODeleteScenario extends XScenario {
 
         @Override
         public void handleMouseDrag(MouseEvent e) {
+            PGO pgo = (PGO) this.mScenario.getApp();
             PGODeleteScenario scenario = PGODeleteScenario.getSingleton();
             Point pt = e.getPoint();
-            if (scenario.draggedPolygon != null) {
-                    scenario.draggedPolygon.translatePolygon(
+            if (pgo.getPolygonMgr().getDraggedPolygon() != null) {
+                    pgo.getPolygonMgr().getDraggedPolygon().translatePolygon(
                         pt.getX() - scenario.lastLocation.getX(),
                         pt.getY() - scenario.lastLocation.getY());
                     scenario.lastLocation = pt;
@@ -169,24 +178,23 @@ public class PGODeleteScenario extends XScenario {
             PGODeleteScenario scenario = PGODeleteScenario.getSingleton();
             Point pt = e.getPoint();
             
-            if ((pt.getX() < 700) || (pt.getY() < 500)) {
-                scenario.draggedPolygon.translatePolygon(
+            if ((pt.getX() < pgo.getDeleteArea().getX()) ||
+                (pt.getY() < pgo.getDeleteArea().getY())) {
+                pgo.getPolygonMgr().getDraggedPolygon().translatePolygon(
                     scenario.firstLocation.getX() - pt.getX(),
                     scenario.firstLocation.getY() - pt.getY());
 
-                scenario.draggedPolygon = null;
+                pgo.getPolygonMgr().getPolygons().add(pgo.getPolygonMgr().getDraggedPolygon());
+                pgo.getPolygonMgr().setDraggedPolygon(null);
                 scenario.firstLocation = null;
                 scenario.lastLocation = null;
                 
                 pgo.vibrate();
 
-                XCmdToChangeScene.execute(pgo,
-                    PGODeleteScenario.DeleteReadyScene.getSingleton(),
-                    this.mReturnScene);
+                XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
             } else {
-                pgo.getPolygonMgr().getPolygons().remove(scenario.draggedPolygon);
-                pgo.getPolygonMgr().getFixedPts().removeAll(scenario.draggedPolygon.getPts());
-                scenario.draggedPolygon = null;
+                pgo.getPolygonMgr().getFixedPts().removeAll(pgo.getPolygonMgr().getDraggedPolygon().getPts());
+                pgo.getPolygonMgr().setDraggedPolygon(null);
                 scenario.firstLocation = null;
                 scenario.lastLocation = null;
 
@@ -201,14 +209,6 @@ public class PGODeleteScenario extends XScenario {
 
         @Override
         public void handleKeyUp(KeyEvent e) {
-            PGO pgo = (PGO) this.mScenario.getApp();
-            int code = e.getKeyCode();
-            
-            switch (code) {
-                case KeyEvent.VK_D:
-                    XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
-                    break;
-            }
         }
 
         @Override

@@ -14,10 +14,12 @@ import javax.swing.JPanel;
 public class PGOCanvas2D extends JPanel {
     //constants
     private static final Color COLOR_PT_CURVE_DEFAULT = new Color(0, 0, 0, 60);
-    private static final Color COLOR_INFO = new Color(255, 0, 0, 128);
+    public static final Color COLOR_INFO = new Color(255, 0, 0, 128);
+    private static final Color COLOR_DELETE_AREA = new Color(255, 0, 0, 20);
     
     private static final Stroke STROKE_PT_CURVE_DEFAULT = new BasicStroke(5f,
         BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+    private static final double MAG_RATIO = 1.5;
     
     public static final Font FONT_INFO = new Font("Monospaced", Font.PLAIN, 24);
     
@@ -55,6 +57,7 @@ public class PGOCanvas2D extends JPanel {
         
         this.drawPolygons(gfx2);
         this.drawCurPolygon(gfx2);
+        this.drawDraggedPolygon(gfx2);
         this.drawSelectedPolygons(gfx2);
         this.drawInfo(gfx2);
         
@@ -78,6 +81,27 @@ public class PGOCanvas2D extends JPanel {
                     polygon.getColor(),
                     polygon.getStroke());
             
+        }
+    }
+    
+    private void drawDraggedPolygon(Graphics2D gfx2) {
+        PGOPolygon draggedPolygon = this.mPGO.getPolygonMgr().getDraggedPolygon();
+        if (draggedPolygon != null) {
+            ArrayList<Point> pts = draggedPolygon.getPts();
+            int nPts = 3;
+            int[] xPts = new int[nPts];
+            int[] yPts = new int[nPts];
+            Point gravity = this.mPGO.getCalcMgr().calcGravityPt(pts);
+            for (int i = 0; i < pts.size(); i++) {
+                Point pt = pts.get(i);
+                xPts[i] = (int) (gravity.x + (pt.x - gravity.x) * MAG_RATIO);
+                yPts[i] = (int) (gravity.y + (pt.y - gravity.y) * MAG_RATIO);
+            }
+            gfx2.setColor(draggedPolygon.getColor());
+            gfx2.setStroke(draggedPolygon.getStroke());
+            gfx2.fillPolygon(xPts, yPts, nPts);
+            gfx2.setColor(COLOR_DELETE_AREA);
+            gfx2.fill(this.mPGO.getDeleteArea());
         }
     }
 

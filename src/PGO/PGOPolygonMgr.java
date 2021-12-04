@@ -26,6 +26,13 @@ public class PGOPolygonMgr {
     public ArrayList<PGOPolygon> getSelectedPolygons() {
         return this.mSelectedPolygons;
     }
+    private PGOPolygon mDraggedPolygon = null;
+    public PGOPolygon getDraggedPolygon() {
+        return this.mDraggedPolygon;
+    }
+    public void setDraggedPolygon(PGOPolygon polygon) {
+        this.mDraggedPolygon = polygon;
+    }
     
     private ArrayList<Point> mFixedPts = null;
     public ArrayList<Point> getFixedPts() {
