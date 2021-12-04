@@ -1,0 +1,164 @@
+package PGO;
+
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.dnd.DropTarget;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import x.XApp;
+import x.XLogMgr;
+import x.XScenarioMgr;
+
+public class PGO extends XApp {
+    private JFrame mFrame = null;
+    public JFrame getFrame() {
+        return this.mFrame;
+    }
+    private Rectangle mDeleteArea = null;
+    public Rectangle getDeleteArea() {
+        return this.mDeleteArea;
+    }
+    public void setDeleteArea(Rectangle area) {
+        this.mDeleteArea = area;
+    }
+    
+    private PGOCanvas2D mCanvas2D = null;
+    public PGOCanvas2D getCanvas2D() {
+        return this.mCanvas2D;
+    }
+    private JPanel mTranslucentPane = null;
+    public JPanel getTranslucentPane() {
+        return this.mTranslucentPane;
+    }
+    private JLabel mImageLabel = null;
+    public JLabel getImageLabel() {
+        return this.mImageLabel;
+    }
+    public void setImageLabel(JLabel image) {
+        this.mImageLabel = image;
+    }
+    private JLabel mTextLabel = null;
+    public JLabel getTextLabel() {
+        return this.mTextLabel;
+    }
+    public void setTextLabel(JLabel label) {
+        this.mTextLabel = label;
+    }
+    private String mFilePath = null;
+    public String getFilePath() {
+        return this.mFilePath;
+    }
+    public void setFilePath(String filepath) {
+        this.mFilePath = filepath;
+    }
+            
+    private PGOEventListener mEventListener = null;
+    private PGODragListener mDragListener = null;
+    
+    private PGOPolygonMgr mPolygonMgr = null;
+    public PGOPolygonMgr getPolygonMgr() {
+        return this.mPolygonMgr;
+    }
+    
+    private XScenarioMgr mScenarioMgr = null;
+    @Override
+    public XScenarioMgr getScenarioMgr() {
+        return this.mScenarioMgr;
+    }
+    
+    private XLogMgr mLogMgr = null;
+    @Override
+    public XLogMgr getLogMgr() {
+        return this.mLogMgr;
+    }
+    
+    private PGOCalcMgr mCalcMgr = null;
+    public PGOCalcMgr getCalcMgr() {
+        return this.mCalcMgr;
+    }
+    
+    //constructor
+    public PGO() {
+        // create components
+        // 1. frmae 2. canvas 3. other components
+        // 4. event listeners 5. managers
+        this.mFrame = new JFrame("Poly-Go-On");
+        this.mCanvas2D = new PGOCanvas2D(this);
+        this.mTranslucentPane = new JPanel();
+        this.mTextLabel = new JLabel("[Drop Image Here]");
+        this.mEventListener = new PGOEventListener(this);
+        this.mDragListener = new PGODragListener(this);
+        this.mPolygonMgr = new PGOPolygonMgr();
+        this.mScenarioMgr = new PGOScenarioMgr(this);
+        this.mLogMgr = new XLogMgr();
+        this.mCalcMgr = new PGOCalcMgr(this);
+        
+        // connect event listeners
+        DropTarget dropTarget = new DropTarget(this.mCanvas2D, this.mDragListener);
+        this.mCanvas2D.addMouseListener(this.mEventListener);
+        this.mCanvas2D.addMouseMotionListener(this.mEventListener);
+        this.mCanvas2D.addKeyListener(this.mEventListener);
+        this.mCanvas2D.setFocusable(true);
+                
+        // build and show visible components
+        this.mTranslucentPane.setBackground(new Color(255, 255, 255, 128));
+        this.mTranslucentPane.setVisible(false);
+        this.mCanvas2D.setOpaque(false);
+        this.mTextLabel.setFont(PGOCanvas2D.FONT_INFO);
+        this.mTextLabel.setBackground(new Color(0,0,0,30));
+        this.mTextLabel.setVerticalAlignment(JLabel.CENTER);
+        this.mTextLabel.setHorizontalAlignment(JLabel.CENTER);
+        
+        this.mFrame.add(this.mCanvas2D);
+        this.mCanvas2D.add(this.mTextLabel);
+        
+        this.mFrame.setSize(800, 600);
+        this.mFrame.setLocationRelativeTo(null);
+        this.mFrame.setResizable(false);
+        this.mFrame.setVisible(true);
+        this.mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    
+    public static void main(String[] args) {
+        PGO myPGO = new PGO();
+    }
+    
+    public Point findNearPt(Point pt) {
+        ArrayList<Point> fixedPts = this.mPolygonMgr.getFixedPts();
+        for (Point fixedPt : fixedPts) {
+            if (pt.distance(fixedPt) < 10.0) {
+                pt.x = fixedPt.x;
+                pt.y = fixedPt.y;
+                break;
+            }
+        }
+        return pt;
+    }
+    
+    private final static int VIBRATION_LENGTH = 10;
+    private final static int VIBRATION_VELOCITY = 5;
+  
+    public void vibrate() {
+        final int originalX = this.mFrame.getLocationOnScreen().x; 
+        final int originalY = this.mFrame.getLocationOnScreen().y; 
+        for(int i = 0; i < VIBRATION_LENGTH; i++) { 
+            try {
+                Thread.sleep(5);
+                this.mFrame.setLocation(originalX, originalY + VIBRATION_VELOCITY);
+                Thread.sleep(5);
+                this.mFrame.setLocation(originalX, originalY - VIBRATION_VELOCITY);
+                Thread.sleep(5);
+                this.mFrame.setLocation(originalX + VIBRATION_VELOCITY, originalY);
+                Thread.sleep(5); 
+                this.mFrame.setLocation(originalX, originalY);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(PGO.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+}
