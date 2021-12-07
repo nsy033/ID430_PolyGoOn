@@ -77,7 +77,7 @@ public class PGODeleteScenario extends XScenario {
 
                         scenario.firstLocation = pressedPt;
                         scenario.lastLocation = pressedPt;
-                        
+
                         contained = true;
                         break;
                     } else {
@@ -178,8 +178,7 @@ public class PGODeleteScenario extends XScenario {
             PGODeleteScenario scenario = PGODeleteScenario.getSingleton();
             Point pt = e.getPoint();
             
-            if ((pt.getX() < pgo.getDeleteArea().getX()) ||
-                (pt.getY() < pgo.getDeleteArea().getY())) {
+            if (!pgo.getDeleteArea().contains(pt)) {
                 pgo.getPolygonMgr().getDraggedPolygon().translatePolygon(
                     scenario.firstLocation.getX() - pt.getX(),
                     scenario.firstLocation.getY() - pt.getY());

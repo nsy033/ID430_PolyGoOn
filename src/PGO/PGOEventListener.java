@@ -1,5 +1,6 @@
 package PGO;
 
+import PGO.sceanrio.PGODefaultScenario;
 import PGO.sceanrio.PGODeleteScenario;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -7,16 +8,21 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.TimerTask;
 
 public class PGOEventListener implements MouseListener, MouseMotionListener,
     KeyListener {
-    // constant
-    private static long PRESS_DELAY = 1000;
-    
     // fields
     private PGO mPGO = null;
-    private Long mMousePressedTime = null;
     private Point mMousePressedPt = null;
+    public Point getMousePressedPt() {
+        return this.mMousePressedPt;
+    }
+    private Point mMouseLastPt = null;
+    public Point getMouseLastPt() {
+        return this.mMouseLastPt;
+    }
+    private java.util.Timer mTimer = null;
     
     // constructor
     public PGOEventListener(PGO pgo) {
@@ -26,32 +32,51 @@ public class PGOEventListener implements MouseListener, MouseMotionListener,
     @Override
     public void mousePressed(MouseEvent e) {
         PGOScene curScene = (PGOScene) this.mPGO.getScenarioMgr().getCurScene();
-        this.mMousePressedTime = e.getWhen();
-        this.mMousePressedPt = e.getPoint();
         curScene.handleMousePress(e);
+        this.mMousePressedPt = e.getPoint();
+        this.mMouseLastPt = e.getPoint();
         this.mPGO.getCanvas2D().repaint();
+        
+        if (curScene == PGODefaultScenario.ReadyScene.getSingleton()) {
+            if (this.mTimer == null) {
+                this.mTimer = new java.util.Timer();
+            }
+            this.mTimer.schedule(new TimerTask()
+            {
+                public void run()
+                {
+                    PGO pgo = (PGO) PGODeleteScenario.getSingleton().getApp();
+                    PGOScene curScene = (PGOScene) pgo.getScenarioMgr().getCurScene();
+                    if (curScene == PGODeleteScenario.DeleteReadyScene.getSingleton()) {
+                        PGODeleteScenario.DeleteReadyScene.getSingleton().
+                            handleMouseLongPress(
+                                pgo.getEventListener().getMousePressedPt(),
+                                pgo.getEventListener().getMouseLastPt());
+                        pgo.getCanvas2D().repaint();
+                    }
+                }
+            },600,500);
+        }
+        
     }
     
     @Override
     public void mouseDragged(MouseEvent e) {
+        this.mMouseLastPt = e.getPoint();
         PGOScene curScene =
             (PGOScene) this.mPGO.getScenarioMgr().getCurScene();
-        //curScene.handleMouseDrag(e);
-        if (this.mMousePressedTime != null) {
-            if (e.getWhen() - this.mMousePressedTime > PRESS_DELAY) {
-                if (curScene == PGODeleteScenario.DeleteReadyScene.getSingleton()) {
-                    PGODeleteScenario.DeleteReadyScene.getSingleton().handleMouseLongPress(this.mMousePressedPt, e.getPoint());
-                }
-            }
-        }
         curScene.handleMouseDrag(e);
         this.mPGO.getCanvas2D().repaint();
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        this.mMousePressedTime = null;
-        this.mMousePressedPt = null;
+        if(this.mTimer != null) {
+            this.mTimer.cancel();
+            this.mTimer = null;
+            this.mMousePressedPt = null;
+            this.mMouseLastPt = null;
+        }
         PGOScene curScene =
             (PGOScene) this.mPGO.getScenarioMgr().getCurScene();
         curScene.handleMouseRelease(e);

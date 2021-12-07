@@ -5,6 +5,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.BorderLayout;
 import java.awt.dnd.DropTarget;
+import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,17 +19,17 @@ import x.XLogMgr;
 import x.XScenarioMgr;
 
 public class PGO extends XApp {
-    public final int SLIDER_HEIGHT = 40;
+    public static final int SLIDER_HEIGHT = 40;
     
     private JFrame mFrame = null;
     public JFrame getFrame() {
         return this.mFrame;
     }
-    private Rectangle mDeleteArea = null;
-    public Rectangle getDeleteArea() {
+    private Ellipse2D mDeleteArea = null;
+    public Ellipse2D getDeleteArea() {
         return this.mDeleteArea;
     }
-    public void setDeleteArea(Rectangle area) {
+    public void setDeleteArea(Ellipse2D area) {
         this.mDeleteArea = area;
     }
     
@@ -39,6 +40,10 @@ public class PGO extends XApp {
     private JPanel mTranslucentPane = null;
     public JPanel getTranslucentPane() {
         return this.mTranslucentPane;
+    }
+    private JPanel mImagePane = null;
+    public JPanel getImagePane() {
+        return this.mImagePane;
     }
     private JLabel mImageLabel = null;
     public JLabel getImageLabel() {
@@ -95,6 +100,9 @@ public class PGO extends XApp {
     }
     
     private PGOEventListener mEventListener = null;
+    public PGOEventListener getEventListener() {
+        return this.mEventListener;
+    }
     private PGODragListener mDragListener = null;
     
     private PGOPolygonMgr mPolygonMgr = null;
@@ -127,6 +135,7 @@ public class PGO extends XApp {
         this.mFrame = new JFrame("Poly-Go-On");
         this.mCanvas2D = new PGOCanvas2D(this);
         this.mTranslucentPane = new JPanel();
+        this.mImagePane = new JPanel();
         this.mTextLabel = new JLabel("[Drop Image Here]");
         this.mEventListener = new PGOEventListener(this);
         this.mDragListener = new PGODragListener(this);
@@ -144,7 +153,7 @@ public class PGO extends XApp {
         this.briSlider = new JSlider(-255, 255, 0);
         
         // connect event listeners
-        DropTarget dropTarget = new DropTarget(this.mCanvas2D, this.mDragListener);
+        DropTarget dropTarget = new DropTarget(this.mImagePane, this.mDragListener);
         this.mCanvas2D.addMouseListener(this.mEventListener);
         this.mCanvas2D.addMouseMotionListener(this.mEventListener);
         this.mCanvas2D.addKeyListener(this.mEventListener);
@@ -167,6 +176,7 @@ public class PGO extends XApp {
         this.mTextLabel.setBackground(new Color(0,0,0,30));
         this.mTextLabel.setVerticalAlignment(JLabel.CENTER);
         this.mTextLabel.setHorizontalAlignment(JLabel.CENTER);
+        this.mImagePane.add(this.mTextLabel, BorderLayout.CENTER);
         
         this.hsbPanel.add(new JLabel("Hue"));
         this.hsbPanel.add(hueSlider, BorderLayout.CENTER);
@@ -178,7 +188,8 @@ public class PGO extends XApp {
         
         this.mFrame.add(this.hsbPanel, BorderLayout.SOUTH);
         this.mFrame.add(this.mCanvas2D, BorderLayout.CENTER);
-        this.mCanvas2D.add(this.mTextLabel);
+        this.mFrame.add(this.mTranslucentPane, BorderLayout.CENTER);
+        this.mFrame.add(this.mImagePane, BorderLayout.CENTER);
         
         this.mFrame.setSize(800, 600);
         this.mFrame.setLocationRelativeTo(null);

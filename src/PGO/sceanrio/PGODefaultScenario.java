@@ -8,6 +8,7 @@ import PGO.PGOScene;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -102,20 +103,16 @@ public class PGODefaultScenario extends XScenario {
                         PGODeformScenario.DeformReadyScene.getSingleton(),
                         this);
                     break;
-                case KeyEvent.VK_D:
-                    XCmdToChangeScene.execute(pgo,
-                        PGODeleteScenario.DeleteReadyScene.getSingleton(),
-                        this);
-                    break;
                 case KeyEvent.VK_C:
-                    Dimension prevSize = pgo.getFrame().size();
+                    Dimension prevSize = pgo.getFrame().getSize();
+                    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                     pgo.getFrame().setSize(prevSize.width, prevSize.height + pgo.SLIDER_HEIGHT);
                     XCmdToChangeScene.execute(pgo,
                         PGOColorScenario.ColorReadyScene.getSingleton(),
                         this);
                     break;
                 case KeyEvent.VK_V:
-                    pgo.getImageLabel().setVisible(false);
+                    pgo.getImagePane().setVisible(false);
                     XCmdToChangeScene.execute(pgo,
                         PGODefaultScenario.ImageHideScene.getSingleton(),
                         this);
@@ -123,21 +120,9 @@ public class PGODefaultScenario extends XScenario {
                 case KeyEvent.VK_CONTROL:
                     this.mCtrlPressed = true;
                     break;
-            }
-        }
-
-        @Override
-        public void handleKeyUp(KeyEvent e) {
-            PGO pgo = (PGO) this.mScenario.getApp();
-            int code = e.getKeyCode();
-            
-            switch (code) {
-                case KeyEvent.VK_CONTROL:
-                    this.mCtrlPressed = false;
-                    break;
                 case KeyEvent.VK_S:
                     if (this.mCtrlPressed) {
-                        pgo.getImageLabel().setVisible(false);
+                        pgo.getImagePane().setVisible(false);
 
                         pgo.setTextLabel(new JLabel("Press Enter to save your art"));
                         pgo.getTextLabel().setFont(PGOCanvas2D.FONT_INFO);
@@ -151,6 +136,19 @@ public class PGODefaultScenario extends XScenario {
                             PGOSaveScenario.SaveReadyScene.getSingleton(),
                             null);
                     }
+                    break;
+            }
+        }
+
+        @Override
+        public void handleKeyUp(KeyEvent e) {
+            PGO pgo = (PGO) this.mScenario.getApp();
+            int code = e.getKeyCode();
+            
+            switch (code) {
+                case KeyEvent.VK_CONTROL:
+                    this.mCtrlPressed = false;
+                    break;
             }
         }
 
@@ -219,7 +217,7 @@ public class PGODefaultScenario extends XScenario {
             
             switch (code) {
                 case KeyEvent.VK_V:
-                    pgo.getImageLabel().setVisible(true);
+                    pgo.getImagePane().setVisible(true);
                     XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
                     break;
             }
