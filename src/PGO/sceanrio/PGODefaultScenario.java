@@ -9,7 +9,6 @@ import PGO.PGOScene;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -18,27 +17,27 @@ import javax.swing.event.ChangeEvent;
 import x.XApp;
 import x.XCmdToChangeScene;
 import x.XScenario;
-import javax.swing.JPanel;
-import java.awt.BorderLayout;
 
 public class PGODefaultScenario extends XScenario {
     // singleton pattern
     private static PGODefaultScenario mSingleton = null;
+
     public static PGODefaultScenario createSingleton(XApp app) {
         assert (PGODefaultScenario.mSingleton == null);
         PGODefaultScenario.mSingleton = new PGODefaultScenario(app);
         return PGODefaultScenario.mSingleton;
     }
+
     public static PGODefaultScenario getSingleton() {
         assert (PGODefaultScenario.mSingleton != null);
         return PGODefaultScenario.mSingleton;
     }
-    
+
     // private contructor
     private PGODefaultScenario(XApp app) {
         super(app);
     }
-    
+
     @Override
     protected void addScenes() {
         this.addScene(PGODefaultScenario.ReadyScene.createSingleton(this));
@@ -48,20 +47,22 @@ public class PGODefaultScenario extends XScenario {
     public static class ReadyScene extends PGOScene {
         // singleton pattern
         private static ReadyScene mSingleton = null;
+
         public static ReadyScene createSingleton(XScenario scenario) {
             assert (ReadyScene.mSingleton == null);
             ReadyScene.mSingleton = new ReadyScene(scenario);
             return ReadyScene.mSingleton;
         }
+
         public static ReadyScene getSingleton() {
             assert (ReadyScene.mSingleton != null);
             return ReadyScene.mSingleton;
         }
-        
+
         private ReadyScene(XScenario scenario) {
             super(scenario);
         }
-        
+
         private boolean mCtrlPressed = false;
 
         @Override
@@ -72,16 +73,16 @@ public class PGODefaultScenario extends XScenario {
             ArrayList<PGOPolygon> polygons = polygonMgr.getPolygons();
             if (!pgo.getCalcMgr().contained(pt, polygons)) {
                 pgo.getPolygonMgr().createCurPolygon(pt,
-                    pgo.getCanvas2D().getCurColorForPolygon(),
-                    pgo.getCanvas2D().getCurStrokeForPolygon());
-                
+                        pgo.getCanvas2D().getCurColorForPolygon(),
+                        pgo.getCanvas2D().getCurStrokeForPolygon());
+
                 XCmdToChangeScene.execute(pgo,
-                    PGOCreatePolygonScenario.SetFirstPtScene.getSingleton(),
-                    this);
+                        PGOCreatePolygonScenario.SetFirstPtScene.getSingleton(),
+                        this);
             } else {
                 XCmdToChangeScene.execute(pgo,
-                    PGODeleteScenario.DeleteReadyScene.getSingleton(),
-                    this);
+                        PGODeleteScenario.DeleteReadyScene.getSingleton(),
+                        this);
             }
         }
 
@@ -98,25 +99,26 @@ public class PGODefaultScenario extends XScenario {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGOPanelMgr panelMgr = pgo.getPanelMgr();
             int code = e.getKeyCode();
-            
+
             switch (code) {
                 case KeyEvent.VK_SHIFT:
                     XCmdToChangeScene.execute(pgo,
-                        PGODeformScenario.DeformReadyScene.getSingleton(),
-                        this);
+                            PGODeformScenario.DeformReadyScene.getSingleton(),
+                            this);
                     break;
                 case KeyEvent.VK_C:
                     Dimension prevSize = pgo.getFrame().getSize();
-                    pgo.getFrame().setSize(prevSize.width, prevSize.height + PGO.DELTA_WINDOW_HEIGTH);
+                    pgo.getFrame().setSize(prevSize.width,
+                            prevSize.height + pgo.getPanelMgr().getHSBPanel().getHeight());
                     XCmdToChangeScene.execute(pgo,
-                        PGOColorScenario.ColorReadyScene.getSingleton(),
-                        this);
+                            PGOColorScenario.ColorReadyScene.getSingleton(),
+                            this);
                     break;
                 case KeyEvent.VK_V:
                     panelMgr.getImagePane().setVisible(false);
                     XCmdToChangeScene.execute(pgo,
-                        PGODefaultScenario.ImageHideScene.getSingleton(),
-                        this);
+                            PGODefaultScenario.ImageHideScene.getSingleton(),
+                            this);
                     break;
                 case KeyEvent.VK_CONTROL:
                     this.mCtrlPressed = true;
@@ -129,13 +131,13 @@ public class PGODefaultScenario extends XScenario {
                         panelMgr.getTextLabel().setFont(PGOCanvas2D.FONT_INFO);
                         panelMgr.getTextLabel().setVerticalAlignment(JLabel.CENTER);
                         panelMgr.getTextLabel().setHorizontalAlignment(JLabel.CENTER);
-                        
+
                         pgo.getCanvas2D().setOpaque(true);
                         pgo.getCanvas2D().add(panelMgr.getTextLabel());
-                        
+
                         XCmdToChangeScene.execute(pgo,
-                            PGOSaveScenario.SaveReadyScene.getSingleton(),
-                            null);
+                                PGOSaveScenario.SaveReadyScene.getSingleton(),
+                                null);
                     }
                     break;
             }
@@ -143,9 +145,8 @@ public class PGODefaultScenario extends XScenario {
 
         @Override
         public void handleKeyUp(KeyEvent e) {
-            PGO pgo = (PGO) this.mScenario.getApp();
             int code = e.getKeyCode();
-            
+
             switch (code) {
                 case KeyEvent.VK_CONTROL:
                     this.mCtrlPressed = false;
@@ -177,20 +178,22 @@ public class PGODefaultScenario extends XScenario {
         public void handleChange(ChangeEvent e) {
         }
     }
-    
+
     public static class ImageHideScene extends PGOScene {
         // singleton pattern
         private static ImageHideScene mSingleton = null;
+
         public static ImageHideScene createSingleton(XScenario scenario) {
             assert (ImageHideScene.mSingleton == null);
             ImageHideScene.mSingleton = new ImageHideScene(scenario);
             return ImageHideScene.mSingleton;
         }
+
         public static ImageHideScene getSingleton() {
             assert (ImageHideScene.mSingleton != null);
             return ImageHideScene.mSingleton;
         }
-        
+
         private ImageHideScene(XScenario scenario) {
             super(scenario);
         }
@@ -215,7 +218,7 @@ public class PGODefaultScenario extends XScenario {
         public void handleKeyUp(KeyEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
             int code = e.getKeyCode();
-            
+
             switch (code) {
                 case KeyEvent.VK_V:
                     pgo.getPanelMgr().getImagePane().setVisible(true);
@@ -248,5 +251,5 @@ public class PGODefaultScenario extends XScenario {
         public void handleChange(ChangeEvent e) {
         }
     }
-    
+
 }
