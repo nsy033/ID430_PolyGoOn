@@ -1,6 +1,7 @@
 package PGO.sceanrio;
 
 import PGO.PGO;
+import PGO.PGOPanelMgr;
 import PGO.PGOScene;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -27,8 +28,6 @@ import x.XCmdToChangeScene;
 import x.XScenario;
 
 public class PGOStartScenario extends XScenario {
-    // The template for JSIScenario.
-    
     // singleton pattern
     private static PGOStartScenario mSingleton = null;
     public static PGOStartScenario createSingleton(XApp app) {
@@ -90,14 +89,15 @@ public class PGOStartScenario extends XScenario {
         @Override
         public void handleKeyUp(KeyEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
+            PGOPanelMgr panelMgr = pgo.getPanelMgr();
             int code = e.getKeyCode();
             
             switch (code) {
                 case KeyEvent.VK_ENTER:
                     if (this.mImageLabel != null) {
-                        pgo.setImageLabel(this.mImageLabel);
-                        pgo.getTranslucentPane().setVisible(true);
-                        pgo.setFilePath(this.mPrevPath);
+                        panelMgr.setImageLabel(this.mImageLabel);
+                        panelMgr.getTranslucentPane().setVisible(true);
+                        panelMgr.setFilePath(this.mPrevPath);
                         XCmdToChangeScene.execute(pgo,
                             PGODefaultScenario.ReadyScene.getSingleton(), null);
                     }
@@ -132,21 +132,21 @@ public class PGOStartScenario extends XScenario {
                         displayImage(file.getPath());
                     }
                 } catch(Exception ex) {
-//                    System.out.println("image loading");
                 }
             }
         }
         
         private void displayImage(String path) {
             PGO pgo = (PGO) this.mScenario.getApp();
+            PGOPanelMgr panelMgr = pgo.getPanelMgr();
 
             if (this.mImageLabel == null) {
-                pgo.getImagePane().remove(pgo.getTextLabel());
+                panelMgr.getImagePane().remove(panelMgr.getTextLabel());
                 this.mPrevPath = path;
                 this.setImageLabel(path);
             } else {
                 if (!this.mPrevPath.equals(path)) {
-                    pgo.getImagePane().remove(this.mImageLabel);
+                    panelMgr.getImagePane().remove(this.mImageLabel);
                     this.mImageLabel = null;
                     this.mPrevPath = path;
                     this.setImageLabel(path);
@@ -156,6 +156,7 @@ public class PGOStartScenario extends XScenario {
         
         private void setImageLabel(String path) {
             PGO pgo = (PGO) this.mScenario.getApp();
+            PGOPanelMgr panelMgr = pgo.getPanelMgr();
             Image image = new ImageIcon(path).getImage();
 
             int imgWidth = image.getWidth(null);
@@ -164,30 +165,25 @@ public class PGOStartScenario extends XScenario {
             int width = (int) (imgWidth * d);
             int height = (int) (imgHeight * d);
             ImageIcon imageIcon = new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_DEFAULT));
-            pgo.setImageLabel(imageIcon);
+            panelMgr.setImageLabel(imageIcon);
             
             this.mImageLabel = new JLabel();
             this.mImageLabel.setIcon(imageIcon);
-//            this.mImageLabel.setVerticalAlignment(JLabel.CENTER);
-//            this.mImageLabel.setHorizontalAlignment(JLabel.CENTER);
+            
             if (pgo.getDeleteArea() != null) {
                 pgo.setDeleteArea(null);
             }
             pgo.setDeleteArea(new Ellipse2D.Double((double) width - 0.5 * height , (double) height - 0.5 * height ,height, height));
             pgo.getCanvas2D().setDeleteAreaPaint(new Point2D.Float(width, height), height);
-            // Point pt = new Point();
-            // pt.x = (int) (width * 0.87);
-            // pt.y = (int) (height * 0.65);
-            // pgo.getDeleteArea().add(pt);
+            
             pgo.getCanvas2D().setSize(width, height);
-            pgo.getHSBPanel().setSize(width, PGO.SLIDER_HEIGHT);
-            pgo.getTranslucentPane().setSize(width, height);
-            pgo.getImagePane().setSize(width, height);
-//            pgo.setFrameWidth(width);
-//            pgo.setFrameHeight(height);
+            panelMgr.getHSBPanel().setSize(width, PGO.SLIDER_HEIGHT);
+            panelMgr.getTranslucentPane().setSize(width, height);
+            panelMgr.getImagePane().setSize(width, height);
+            
             pgo.getFrame().setSize(width, height + 20);
             pgo.getFrame().setLocationRelativeTo(null);
-            pgo.getImagePane().add(this.mImageLabel, JLabel.CENTER);
+            panelMgr.getImagePane().add(this.mImageLabel, JLabel.CENTER);
         }
 
         @Override

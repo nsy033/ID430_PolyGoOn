@@ -1,6 +1,7 @@
 package PGO.sceanrio;
 
 import PGO.PGO;
+import PGO.PGOPanelMgr;
 import PGO.PGOScene;
 import javax.swing.event.ChangeEvent;
 import java.awt.Graphics2D;
@@ -15,8 +16,6 @@ import x.XCmdToChangeScene;
 import x.XScenario;
 
 public class PGOSaveScenario extends XScenario {
-    // The template for JSIScenario.
-    
     // singleton pattern
     private static PGOSaveScenario mSingleton = null;
     public static PGOSaveScenario createSingleton(XApp app) {
@@ -75,11 +74,12 @@ public class PGOSaveScenario extends XScenario {
         @Override
         public void handleKeyUp(KeyEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
+            PGOPanelMgr panelMgr = pgo.getPanelMgr();
             int code = e.getKeyCode();
             
             switch (code) {
                 case KeyEvent.VK_ENTER:
-                    pgo.getCanvas2D().remove(pgo.getTextLabel());
+                    pgo.getCanvas2D().remove(panelMgr.getTextLabel());
                     BufferedImage captured = new BufferedImage(
                         pgo.getCanvas2D().getWidth(),
                         pgo.getCanvas2D().getHeight(),
@@ -88,7 +88,7 @@ public class PGOSaveScenario extends XScenario {
                     pgo.getCanvas2D().printAll(g);
                     g.dispose();
                     try {
-                        String[] pathList = pgo.getFilePath().split("/");
+                        String[] pathList = panelMgr.getFilePath().split("/");
                         String path = "";
                         String name = pathList[pathList.length - 1].substring(0, pathList[pathList.length - 1].indexOf("."));
                         for (int i = 0; i < pathList.length - 1; i++) {
@@ -101,16 +101,16 @@ public class PGOSaveScenario extends XScenario {
                         exp.printStackTrace();
                     }
                     pgo.getCanvas2D().setOpaque(false);
-                    pgo.getImagePane().setVisible(true);
+                    panelMgr.getImagePane().setVisible(true);
                     
                     XCmdToChangeScene.execute(pgo,
                         PGODefaultScenario.ReadyScene.getSingleton(),
                         null);
                     break;
                 case KeyEvent.VK_ESCAPE:
-                    pgo.getCanvas2D().remove(pgo.getTextLabel());
+                    pgo.getCanvas2D().remove(panelMgr.getTextLabel());
                     pgo.getCanvas2D().setOpaque(false);
-                    pgo.getImagePane().setVisible(true);
+                    panelMgr.getImagePane().setVisible(true);
                     XCmdToChangeScene.execute(pgo,
                         PGODefaultScenario.ReadyScene.getSingleton(),
                         null);

@@ -7,15 +7,12 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.awt.geom.Point2D;
 import javax.swing.event.ChangeEvent;
 import x.XApp;
 import x.XCmdToChangeScene;
 import x.XScenario;
 
 public class PGODeleteScenario extends XScenario {
-    // The template for JSIScenario.
-    
     // singleton pattern
     private static PGODeleteScenario mSingleton = null;
     public static PGODeleteScenario createSingleton(XApp app) {

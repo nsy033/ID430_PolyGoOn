@@ -9,8 +9,6 @@ import x.XApp;
 import x.XScenario;
 
 public class PGOCopyScenario extends XScenario {
-    // The template for JSIScenario.
-    
     // singleton pattern
     private static PGOCopyScenario mSingleton = null;
     public static PGOCopyScenario createSingleton(XApp app) {

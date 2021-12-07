@@ -94,7 +94,7 @@ public class PGOPolygon {
     }
     
     public Color getBgColor(PGO pgo) {
-        ImageIcon imgIcon = (ImageIcon) pgo.getImageLabel().getIcon();
+        ImageIcon imgIcon = (ImageIcon) pgo.getPanelMgr().getImageLabel().getIcon();
 
         Image img = imgIcon.getImage();
         BufferedImage bImg = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);

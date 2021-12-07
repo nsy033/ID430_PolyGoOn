@@ -1,9 +1,9 @@
 package PGO.sceanrio;
 
 import PGO.PGO;
-import PGO.PGOCanvas2D;
 import PGO.PGOPolygon;
 import PGO.PGOScene;
+import PGO.PGOPanelMgr;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -14,7 +14,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import x.XApp;
@@ -71,14 +70,15 @@ public class PGOColorScenario extends XScenario {
         @Override
         public void handleMousePress(MouseEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
+            PGOPanelMgr panelMgr = pgo.getPanelMgr();
             if (e.getSource() != pgo.getCanvas2D()) {
                 JSlider selectedSlider = (JSlider) e.getSource();
                 int type = -1;
-                if (selectedSlider.equals(pgo.getHueSlider())) type = 1;
-                else if (selectedSlider.equals(pgo.getSatSlider())) type = 2;
-                else if (selectedSlider.equals(pgo.getBriSlider())) type = 3;
+                if (selectedSlider.equals(panelMgr.getHueSlider())) type = 1;
+                else if (selectedSlider.equals(panelMgr.getSatSlider())) type = 2;
+                else if (selectedSlider.equals(panelMgr.getBriSlider())) type = 3;
 
-                pgo.getHSBPanel().setFocusable(true);
+                pgo.getPanelMgr().getHSBPanel().setFocusable(true);
                 switch (type) {
                     case 1:
                         XCmdToChangeScene.execute(pgo,
@@ -118,9 +118,9 @@ public class PGOColorScenario extends XScenario {
 
             switch (code) {
                 case KeyEvent.VK_C:
-                    pgo.getHSBPanel().setVisible(false);
+                    pgo.getPanelMgr().getHSBPanel().setVisible(false);
                     Dimension prevSize = pgo.getFrame().getSize();
-                    pgo.getFrame().setSize(prevSize.width, prevSize.height - pgo.SLIDER_HEIGHT);
+                    pgo.getFrame().setSize(prevSize.width, prevSize.height - PGO.SLIDER_HEIGHT);
                     XCmdToChangeScene.execute(pgo, this.getReturnScene(), null);
                     break;
             }
@@ -137,7 +137,7 @@ public class PGOColorScenario extends XScenario {
         @Override
         public void renderScreenObjects(Graphics2D g2) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            pgo.getHSBPanel().setVisible(true);
+            pgo.getPanelMgr().getHSBPanel().setVisible(true);
             pgo.getFrame().revalidate();
         }
 
@@ -170,13 +170,14 @@ public class PGOColorScenario extends XScenario {
         @Override
         public void handleChange(ChangeEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
+            PGOPanelMgr panelMgr = pgo.getPanelMgr();
             
-            float curHue = (float) pgo.getHueSlider().getValue()/360f;
-            float prevSat = (float) pgo.getSatSlider().getValue()/255f;
-            float prevBri = (float) pgo.getBriSlider().getValue()/255f;
+            float curHue = (float) panelMgr.getHueSlider().getValue()/360f;
+            float prevSat = (float) panelMgr.getSatSlider().getValue()/255f;
+            float prevBri = (float) panelMgr.getBriSlider().getValue()/255f;
             
-            if(pgo.getHueSlider().getValueIsAdjusting()) {
-                ImageIcon imgIcon = pgo.getImageIcon();
+            if(panelMgr.getHueSlider().getValueIsAdjusting()) {
+                ImageIcon imgIcon = panelMgr.getImageIcon();
                 Image img = imgIcon.getImage();
                 BufferedImage bImg = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 
@@ -197,9 +198,9 @@ public class PGOColorScenario extends XScenario {
                   }
                 }
 
-                pgo.getImagePane().remove(pgo.getImageLabel());
-                pgo.getImageLabel().setIcon(new ImageIcon(bImg.getScaledInstance(width, height, Image.SCALE_DEFAULT)));
-                pgo.getImagePane().add(pgo.getImageLabel());
+                panelMgr.getImagePane().remove(panelMgr.getImageLabel());
+                panelMgr.getImageLabel().setIcon(new ImageIcon(bImg.getScaledInstance(width, height, Image.SCALE_DEFAULT)));
+                panelMgr.getImagePane().add(panelMgr.getImageLabel());
                 
                 ArrayList<PGOPolygon> polygons = pgo.getPolygonMgr().getPolygons();
                 for (PGOPolygon polygon : polygons) {
@@ -237,9 +238,9 @@ public class PGOColorScenario extends XScenario {
 
             switch (code) {
                 case KeyEvent.VK_C:
-                    pgo.getHSBPanel().setVisible(false);
+                    pgo.getPanelMgr().getHSBPanel().setVisible(false);
                     Dimension prevSize = pgo.getFrame().getSize();
-                    pgo.getFrame().setSize(prevSize.width, prevSize.height - pgo.SLIDER_HEIGHT);
+                    pgo.getFrame().setSize(prevSize.width, prevSize.height - PGO.SLIDER_HEIGHT);
                     pgo.getCanvas2D().setFocusable(true);
                     XCmdToChangeScene.execute(pgo, this.getReturnScene(), null);
                     break;
@@ -287,13 +288,14 @@ public class PGOColorScenario extends XScenario {
         @Override
         public void handleChange(ChangeEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
+            PGOPanelMgr panelMgr = pgo.getPanelMgr();
             
-            float prevHue = (float) pgo.getHueSlider().getValue()/360f;
-            float curSat = (float) pgo.getSatSlider().getValue()/255f;
-            float prevBri = (float) pgo.getBriSlider().getValue()/255f;
+            float prevHue = (float) panelMgr.getHueSlider().getValue()/360f;
+            float curSat = (float) panelMgr.getSatSlider().getValue()/255f;
+            float prevBri = (float) panelMgr.getBriSlider().getValue()/255f;
             
-            if(pgo.getSatSlider().getValueIsAdjusting()) {
-                ImageIcon imgIcon = pgo.getImageIcon();
+            if(panelMgr.getSatSlider().getValueIsAdjusting()) {
+                ImageIcon imgIcon = panelMgr.getImageIcon();
                 Image img = imgIcon.getImage();
                 BufferedImage bImg = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 
@@ -314,9 +316,9 @@ public class PGOColorScenario extends XScenario {
                   }
                 }
                 
-                pgo.getImagePane().remove(pgo.getImageLabel());
-                pgo.getImageLabel().setIcon(new ImageIcon(bImg.getScaledInstance(width, height, Image.SCALE_DEFAULT)));
-                pgo.getImagePane().add(pgo.getImageLabel());
+                panelMgr.getImagePane().remove(panelMgr.getImageLabel());
+                panelMgr.getImageLabel().setIcon(new ImageIcon(bImg.getScaledInstance(width, height, Image.SCALE_DEFAULT)));
+                panelMgr.getImagePane().add(panelMgr.getImageLabel());
                 
                 ArrayList<PGOPolygon> polygons = pgo.getPolygonMgr().getPolygons();
                 for (PGOPolygon polygon : polygons) {
@@ -354,9 +356,9 @@ public class PGOColorScenario extends XScenario {
 
             switch (code) {
                 case KeyEvent.VK_C:
-                    pgo.getHSBPanel().setVisible(false);
+                    pgo.getPanelMgr().getHSBPanel().setVisible(false);
                     Dimension prevSize = pgo.getFrame().getSize();
-                    pgo.getFrame().setSize(prevSize.width, prevSize.height - pgo.SLIDER_HEIGHT);
+                    pgo.getFrame().setSize(prevSize.width, prevSize.height - PGO.SLIDER_HEIGHT);
                     pgo.getCanvas2D().setFocusable(true);
                     XCmdToChangeScene.execute(pgo, this.getReturnScene(), null);
                     break;
@@ -405,12 +407,14 @@ public class PGOColorScenario extends XScenario {
         @Override
         public void handleChange(ChangeEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            float prevHue = (float) pgo.getHueSlider().getValue()/360f;
-            float prevSat = (float) pgo.getSatSlider().getValue()/255f;
-            float curBri = (float) pgo.getBriSlider().getValue()/255f;
+            PGOPanelMgr panelMgr = pgo.getPanelMgr();
+
+            float prevHue = (float) panelMgr.getHueSlider().getValue()/360f;
+            float prevSat = (float) panelMgr.getSatSlider().getValue()/255f;
+            float curBri = (float) panelMgr.getBriSlider().getValue()/255f;
             
-            if(pgo.getBriSlider().getValueIsAdjusting()) {
-                ImageIcon imgIcon = pgo.getImageIcon();
+            if(panelMgr.getBriSlider().getValueIsAdjusting()) {
+                ImageIcon imgIcon = panelMgr.getImageIcon();
                 Image img = imgIcon.getImage();
                 BufferedImage bImg = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 
@@ -431,9 +435,9 @@ public class PGOColorScenario extends XScenario {
                   }
                 }
 
-                pgo.getImagePane().remove(pgo.getImageLabel());
-                pgo.getImageLabel().setIcon(new ImageIcon(bImg.getScaledInstance(width, height, Image.SCALE_DEFAULT)));
-                pgo.getImagePane().add(pgo.getImageLabel());
+                panelMgr.getImagePane().remove(panelMgr.getImageLabel());
+                panelMgr.getImageLabel().setIcon(new ImageIcon(bImg.getScaledInstance(width, height, Image.SCALE_DEFAULT)));
+                panelMgr.getImagePane().add(panelMgr.getImageLabel());
                 
                 ArrayList<PGOPolygon> polygons = pgo.getPolygonMgr().getPolygons();
                 for (PGOPolygon polygon : polygons) {
@@ -471,9 +475,9 @@ public class PGOColorScenario extends XScenario {
 
             switch (code) {
                 case KeyEvent.VK_C:
-                    pgo.getHSBPanel().setVisible(false);
+                    pgo.getPanelMgr().getHSBPanel().setVisible(false);
                     Dimension prevSize = pgo.getFrame().getSize();
-                    pgo.getFrame().setSize(prevSize.width, prevSize.height - pgo.SLIDER_HEIGHT);
+                    pgo.getFrame().setSize(prevSize.width, prevSize.height - PGO.SLIDER_HEIGHT);
                     pgo.getCanvas2D().setFocusable(true);
                     XCmdToChangeScene.execute(pgo, this.getReturnScene(), null);
                     break;
@@ -525,10 +529,5 @@ public class PGOColorScenario extends XScenario {
         pixels[2] = blue;
         
         return pixels;
-    }
-    
-    protected int findArea(MouseEvent e) {
-        PGO pgo = (PGO) this.mApp;
-        return 1;
     }
 }
