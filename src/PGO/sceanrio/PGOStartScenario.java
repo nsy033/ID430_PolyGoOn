@@ -16,6 +16,7 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import static java.lang.Double.min;
 import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
@@ -26,21 +27,23 @@ import x.XScenario;
 public class PGOStartScenario extends XScenario {
     // singleton pattern
     private static PGOStartScenario mSingleton = null;
+
     public static PGOStartScenario createSingleton(XApp app) {
         assert (PGOStartScenario.mSingleton == null);
         PGOStartScenario.mSingleton = new PGOStartScenario(app);
         return PGOStartScenario.mSingleton;
     }
+
     public static PGOStartScenario getSingleton() {
         assert (PGOStartScenario.mSingleton != null);
         return PGOStartScenario.mSingleton;
     }
-    
+
     // private contructor
     private PGOStartScenario(XApp app) {
         super(app);
     }
-    
+
     @Override
     protected void addScenes() {
         this.addScene(PGOStartScenario.ImageReadyScene.createSingleton(this));
@@ -49,23 +52,25 @@ public class PGOStartScenario extends XScenario {
     public static class ImageReadyScene extends PGOScene {
         // singleton pattern
         private static ImageReadyScene mSingleton = null;
+
         public static ImageReadyScene createSingleton(XScenario scenario) {
             assert (ImageReadyScene.mSingleton == null);
             ImageReadyScene.mSingleton = new ImageReadyScene(scenario);
             return ImageReadyScene.mSingleton;
         }
+
         public static ImageReadyScene getSingleton() {
             assert (ImageReadyScene.mSingleton != null);
             return ImageReadyScene.mSingleton;
         }
-        
+
         private ImageReadyScene(XScenario scenario) {
             super(scenario);
         }
 
         private JLabel mImageLabel = null;
         private String mPrevPath = null;
-    
+
         @Override
         public void handleMousePress(MouseEvent e) {
         }
@@ -87,7 +92,7 @@ public class PGOStartScenario extends XScenario {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGOPanelMgr panelMgr = pgo.getPanelMgr();
             int code = e.getKeyCode();
-            
+
             switch (code) {
                 case KeyEvent.VK_ENTER:
                     if (this.mImageLabel != null) {
@@ -95,12 +100,12 @@ public class PGOStartScenario extends XScenario {
                         panelMgr.getTranslucentPane().setVisible(true);
                         panelMgr.setFilePath(this.mPrevPath);
                         XCmdToChangeScene.execute(pgo,
-                            PGODefaultScenario.ReadyScene.getSingleton(), null);
+                                PGODefaultScenario.ReadyScene.getSingleton(), null);
                     }
                     break;
             }
         }
-        
+
         public void handleDragDrop(DropTargetDropEvent ev) {
             // accept dropped items
             ev.acceptDrop(DnDConstants.ACTION_COPY);
@@ -127,11 +132,11 @@ public class PGOStartScenario extends XScenario {
                         File file = (File) t.getTransferData(f);
                         displayImage(file.getPath());
                     }
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                 }
             }
         }
-        
+
         private void displayImage(String path) {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGOPanelMgr panelMgr = pgo.getPanelMgr();
@@ -149,7 +154,7 @@ public class PGOStartScenario extends XScenario {
                 }
             }
         }
-        
+
         private void setImageLabel(String path) {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGOPanelMgr panelMgr = pgo.getPanelMgr();
@@ -157,29 +162,48 @@ public class PGOStartScenario extends XScenario {
 
             int imgWidth = image.getWidth(null);
             int imgHeight = image.getHeight(null);
-            double d = min(1280.0 / imgWidth, 1000.0 / imgHeight);
+            double d = min(1280.0 / imgWidth, 700.0 / imgHeight);
             int width = (int) (imgWidth * d);
             int height = (int) (imgHeight * d);
+
             ImageIcon imageIcon = new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_DEFAULT));
             panelMgr.setImageLabel(imageIcon);
-            
+
             this.mImageLabel = new JLabel();
             this.mImageLabel.setIcon(imageIcon);
-            
-            if (pgo.getDeleteArea() != null) {
-                pgo.setDeleteArea(null);
+            pgo.getFrame().setSize(PGO.DEFAULT_WINDOW_WIDTH, PGO.DEFAULT_WINDOW_HEIGHT);
+
+            if (width < PGO.MIN_WIDTH || height < PGO.MIN_HEIGHT) {
+                panelMgr.getImagePane().add(panelMgr.getTextLabel());
+                pgo.getFrame().setLocationRelativeTo(null);
+                this.mPrevPath = null;
+                this.mImageLabel = null;
+                pgo.vibrate();
+            } else {
+                if (pgo.getDeleteArea() != null) {
+                    pgo.setDeleteArea(null);
+                }
+                pgo.setDeleteArea(new Ellipse2D.Double((double) width - 0.5 * height, (double) height - 0.5 * height,
+                        height, height));
+                pgo.getCanvas2D().setDeleteAreaPaint(new Point2D.Float(width, height), height);
+
+                pgo.getCanvas2D().setSize(width, height);
+                if (width > PGO.SLIDER_WIDTH * 3) {
+                    panelMgr.setHSBPanelLayout(0);
+                    panelMgr.getHSBPanel().setSize(width, PGO.SLIDER_HEIGHT);
+                    panelMgr.getHSBPanel().setLocation(0, height + PGO.SLIDER_HEIGHT);
+                } else {
+                    panelMgr.setHSBPanelLayout(1);
+                    panelMgr.getHSBPanel().setSize(width, PGO.SLIDER_HEIGHT * 3);
+                    panelMgr.getHSBPanel().setLocation(0, height + PGO.SLIDER_HEIGHT * 3);
+                }
+                panelMgr.getTranslucentPane().setSize(width, height);
+                panelMgr.getImagePane().setSize(width, height);
+
+                pgo.getFrame().setSize(width, height + PGO.SLIDER_HEIGHT);
+                pgo.getFrame().setLocationRelativeTo(null);
+                panelMgr.getImagePane().add(this.mImageLabel, JLabel.CENTER);
             }
-            pgo.setDeleteArea(new Ellipse2D.Double((double) width - 0.5 * height , (double) height - 0.5 * height ,height, height));
-            pgo.getCanvas2D().setDeleteAreaPaint(new Point2D.Float(width, height), height);
-            
-            pgo.getCanvas2D().setSize(width, height);
-            panelMgr.getHSBPanel().setSize(width, PGO.SLIDER_HEIGHT);
-            panelMgr.getTranslucentPane().setSize(width, height);
-            panelMgr.getImagePane().setSize(width, height);
-            
-            pgo.getFrame().setSize(width, height + PGO.SLIDER_HEIGHT);
-            pgo.getFrame().setLocationRelativeTo(null);
-            panelMgr.getImagePane().add(this.mImageLabel, JLabel.CENTER);
         }
 
         @Override
@@ -206,5 +230,5 @@ public class PGOStartScenario extends XScenario {
         public void handleChange(ChangeEvent e) {
         }
     }
-    
+
 }

@@ -1,4 +1,4 @@
- package PGO;
+package PGO;
 
 import java.awt.Point;
 import java.awt.BorderLayout;
@@ -19,62 +19,79 @@ public class PGO extends XApp {
     public static final int DELTA_WINDOW_HEIGTH = 42;
     public static final int TEXT_LABEL_HEIGHT = 250;
     public static final int SLIDER_HEIGHT = 29;
+    public static final int SLIDER_WIDTH = 280;
+    public static final int MIN_HEIGHT = 300;
+    public static final int MIN_WIDTH = 400;
     public static final int EMPTY_BORDER = -5;
 
     // fields
     private JFrame mFrame = null;
+
     public JFrame getFrame() {
         return this.mFrame;
     }
+
     private Ellipse2D mDeleteArea = null;
+
     public Ellipse2D getDeleteArea() {
         return this.mDeleteArea;
     }
+
     public void setDeleteArea(Ellipse2D area) {
         this.mDeleteArea = area;
     }
-    
+
     private PGOCanvas2D mCanvas2D = null;
+
     public PGOCanvas2D getCanvas2D() {
         return this.mCanvas2D;
     }
-    
+
     private PGOEventListener mEventListener = null;
+
     public PGOEventListener getEventListener() {
         return this.mEventListener;
     }
+
     private PGODragListener mDragListener = null;
+
     public PGODragListener getDragListener() {
         return this.mDragListener;
     }
-    
+
     private PGOPolygonMgr mPolygonMgr = null;
+
     public PGOPolygonMgr getPolygonMgr() {
         return this.mPolygonMgr;
     }
-    
+
     private XScenarioMgr mScenarioMgr = null;
+
     @Override
     public XScenarioMgr getScenarioMgr() {
         return this.mScenarioMgr;
     }
-    
+
     private XLogMgr mLogMgr = null;
+
     @Override
     public XLogMgr getLogMgr() {
         return this.mLogMgr;
     }
-    
+
     private PGOCalcMgr mCalcMgr = null;
+
     public PGOCalcMgr getCalcMgr() {
         return this.mCalcMgr;
     }
+
     private PGOPanelMgr mPanelMgr = null;
+
     public PGOPanelMgr getPanelMgr() {
         return this.mPanelMgr;
     }
-    
-    //constructor
+
+    // constructor
     public PGO() {
         // create components
         // 1. frmae 2. canvas 3. other components
@@ -87,13 +104,13 @@ public class PGO extends XApp {
         this.mScenarioMgr = new PGOScenarioMgr(this);
         this.mLogMgr = new XLogMgr();
         this.mCalcMgr = new PGOCalcMgr(this);
-                
+
         // connect event listeners
         this.mCanvas2D.addMouseListener(this.mEventListener);
         this.mCanvas2D.addMouseMotionListener(this.mEventListener);
         this.mCanvas2D.addKeyListener(this.mEventListener);
         this.mCanvas2D.setFocusable(true);
-                
+
         // build and show visible components
         this.mCanvas2D.setOpaque(false);
         this.mCanvas2D.setBorder(BorderFactory.createEmptyBorder(PGO.EMPTY_BORDER, 0, 0, 0));
@@ -103,15 +120,15 @@ public class PGO extends XApp {
 
         this.mFrame.setSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
         this.mFrame.setLocationRelativeTo(null);
-        this.mFrame.setResizable(false);
+        this.mFrame.setResizable(true);
         this.mFrame.setVisible(true);
         this.mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-    
+
     public static void main(String[] args) {
         new PGO();
     }
-    
+
     public Point findNearPt(Point pt) {
         ArrayList<Point> fixedPts = this.mPolygonMgr.getFixedPts();
         for (Point fixedPt : fixedPts) {
@@ -123,22 +140,22 @@ public class PGO extends XApp {
         }
         return pt;
     }
-    
+
     private final static int VIBRATION_LENGTH = 10;
     private final static int VIBRATION_VELOCITY = 5;
-  
+
     public void vibrate() {
-        final int originalX = this.mFrame.getLocationOnScreen().x; 
-        final int originalY = this.mFrame.getLocationOnScreen().y; 
-        for(int i = 0; i < VIBRATION_LENGTH; i++) { 
+        final int originalX = this.mFrame.getLocationOnScreen().x;
+        final int originalY = this.mFrame.getLocationOnScreen().y;
+        for (int i = 0; i < VIBRATION_LENGTH; i++) {
             try {
-                Thread.sleep(5);
+                Thread.sleep(15);
                 this.mFrame.setLocation(originalX, originalY + VIBRATION_VELOCITY);
                 Thread.sleep(5);
                 this.mFrame.setLocation(originalX, originalY - VIBRATION_VELOCITY);
                 Thread.sleep(5);
                 this.mFrame.setLocation(originalX + VIBRATION_VELOCITY, originalY);
-                Thread.sleep(5); 
+                Thread.sleep(5);
                 this.mFrame.setLocation(originalX, originalY);
             } catch (InterruptedException ex) {
                 Logger.getLogger(PGO.class.getName()).log(Level.SEVERE, null, ex);
