@@ -5,10 +5,6 @@ import PGO.PGOPanelMgr;
 import PGO.PGOScene;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
@@ -181,7 +177,7 @@ public class PGOStartScenario extends XScenario {
             panelMgr.getTranslucentPane().setSize(width, height);
             panelMgr.getImagePane().setSize(width, height);
             
-            pgo.getFrame().setSize(width, height + 20);
+            pgo.getFrame().setSize(width, height + PGO.SLIDER_HEIGHT);
             pgo.getFrame().setLocationRelativeTo(null);
             panelMgr.getImagePane().add(this.mImageLabel, JLabel.CENTER);
         }

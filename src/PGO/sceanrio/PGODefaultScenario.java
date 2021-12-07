@@ -18,6 +18,8 @@ import javax.swing.event.ChangeEvent;
 import x.XApp;
 import x.XCmdToChangeScene;
 import x.XScenario;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
 
 public class PGODefaultScenario extends XScenario {
     // singleton pattern
@@ -105,8 +107,7 @@ public class PGODefaultScenario extends XScenario {
                     break;
                 case KeyEvent.VK_C:
                     Dimension prevSize = pgo.getFrame().getSize();
-                    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                    pgo.getFrame().setSize(prevSize.width, prevSize.height + pgo.SLIDER_HEIGHT);
+                    pgo.getFrame().setSize(prevSize.width, prevSize.height + PGO.DELTA_WINDOW_HEIGTH);
                     XCmdToChangeScene.execute(pgo,
                         PGOColorScenario.ColorReadyScene.getSingleton(),
                         this);
