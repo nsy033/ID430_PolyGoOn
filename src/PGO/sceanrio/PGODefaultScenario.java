@@ -2,6 +2,7 @@ package PGO.sceanrio;
 
 import PGO.PGO;
 import PGO.PGOCanvas2D;
+import PGO.PGOPanelMgr;
 import PGO.PGOPolygon;
 import PGO.PGOPolygonMgr;
 import PGO.PGOScene;
@@ -19,8 +20,6 @@ import x.XCmdToChangeScene;
 import x.XScenario;
 
 public class PGODefaultScenario extends XScenario {
-    // The template for JSIScenario.
-    
     // singleton pattern
     private static PGODefaultScenario mSingleton = null;
     public static PGODefaultScenario createSingleton(XApp app) {
@@ -95,6 +94,7 @@ public class PGODefaultScenario extends XScenario {
         @Override
         public void handleKeyDown(KeyEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
+            PGOPanelMgr panelMgr = pgo.getPanelMgr();
             int code = e.getKeyCode();
             
             switch (code) {
@@ -112,7 +112,7 @@ public class PGODefaultScenario extends XScenario {
                         this);
                     break;
                 case KeyEvent.VK_V:
-                    pgo.getImagePane().setVisible(false);
+                    panelMgr.getImagePane().setVisible(false);
                     XCmdToChangeScene.execute(pgo,
                         PGODefaultScenario.ImageHideScene.getSingleton(),
                         this);
@@ -122,15 +122,15 @@ public class PGODefaultScenario extends XScenario {
                     break;
                 case KeyEvent.VK_S:
                     if (this.mCtrlPressed) {
-                        pgo.getImagePane().setVisible(false);
+                        panelMgr.getImagePane().setVisible(false);
 
-                        pgo.setTextLabel(new JLabel("Press Enter to save your art"));
-                        pgo.getTextLabel().setFont(PGOCanvas2D.FONT_INFO);
-                        pgo.getTextLabel().setVerticalAlignment(JLabel.CENTER);
-                        pgo.getTextLabel().setHorizontalAlignment(JLabel.CENTER);
+                        panelMgr.setTextLabel(new JLabel("Press Enter to save your art"));
+                        panelMgr.getTextLabel().setFont(PGOCanvas2D.FONT_INFO);
+                        panelMgr.getTextLabel().setVerticalAlignment(JLabel.CENTER);
+                        panelMgr.getTextLabel().setHorizontalAlignment(JLabel.CENTER);
                         
                         pgo.getCanvas2D().setOpaque(true);
-                        pgo.getCanvas2D().add(pgo.getTextLabel());
+                        pgo.getCanvas2D().add(panelMgr.getTextLabel());
                         
                         XCmdToChangeScene.execute(pgo,
                             PGOSaveScenario.SaveReadyScene.getSingleton(),
@@ -217,7 +217,7 @@ public class PGODefaultScenario extends XScenario {
             
             switch (code) {
                 case KeyEvent.VK_V:
-                    pgo.getImagePane().setVisible(true);
+                    pgo.getPanelMgr().getImagePane().setVisible(true);
                     XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
                     break;
             }

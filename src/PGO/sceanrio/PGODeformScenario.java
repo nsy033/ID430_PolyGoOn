@@ -17,6 +17,7 @@ import x.XCmdToChangeScene;
 import x.XScenario;
 
 public class PGODeformScenario extends XScenario {
+    // fields
     private Point mPrevPt = null;
     public Point getPrevPt() {
         return this.mPrevPt;
