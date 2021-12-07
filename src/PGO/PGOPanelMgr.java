@@ -114,7 +114,7 @@ public class PGOPanelMgr {
         this.mTextLabel.setBackground(new Color(0,0,0,30));
         this.mTextLabel.setVerticalAlignment(JLabel.CENTER);
         this.mTextLabel.setHorizontalAlignment(JLabel.CENTER);
-        this.mTextLabel.setBorder(BorderFactory.createEmptyBorder((int)(PGO.DEFAULT_WINDOW_HEIGHT / 2.2), 0, 0, 0));
+        this.mTextLabel.setBorder(BorderFactory.createEmptyBorder(PGO.TEXT_LABEL_HEIGHT, 0, 0, 0));
         this.mImagePane.add(this.mTextLabel, BorderLayout.CENTER);
         this.mImagePane.setBorder(BorderFactory.createEmptyBorder(PGO.EMPTY_BORDER, 0, 0, 0));
 

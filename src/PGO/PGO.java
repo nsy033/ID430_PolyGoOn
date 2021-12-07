@@ -17,6 +17,7 @@ public class PGO extends XApp {
     public static final int DEFAULT_WINDOW_WIDTH = 800;
     public static final int DEFAULT_WINDOW_HEIGHT = 600;
     public static final int DELTA_WINDOW_HEIGTH = 42;
+    public static final int TEXT_LABEL_HEIGHT = 250;
     public static final int SLIDER_HEIGHT = 29;
     public static final int EMPTY_BORDER = -5;
 
