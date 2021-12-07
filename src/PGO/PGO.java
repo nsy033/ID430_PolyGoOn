@@ -4,10 +4,13 @@ import java.awt.Point;
 import java.awt.BorderLayout;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+
+import PGO.sceanrio.PGOStartScenario;
 import x.XApp;
 import x.XLogMgr;
 import x.XScenarioMgr;
@@ -112,17 +115,44 @@ public class PGO extends XApp {
         this.mCanvas2D.setFocusable(true);
 
         // build and show visible components
+        BorderLayout bLayout = new BorderLayout();
         this.mCanvas2D.setOpaque(false);
         this.mCanvas2D.setBorder(BorderFactory.createEmptyBorder(PGO.EMPTY_BORDER, 0, 0, 0));
+        this.mFrame.setLayout(bLayout);
         this.mFrame.add(this.mCanvas2D, BorderLayout.CENTER);
 
         this.mPanelMgr = new PGOPanelMgr(this);
 
-        this.mFrame.setSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
-        this.mFrame.setLocationRelativeTo(null);
-        this.mFrame.setResizable(true);
+        this.mFrame.setResizable(false);
         this.mFrame.setVisible(true);
         this.mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        this.startProgram();
+    }
+
+    private void startProgram() {
+        java.util.Timer startTimer = new java.util.Timer();
+
+        this.mFrame.add(this.mPanelMgr.getStartPane(), BorderLayout.CENTER);
+        this.mFrame.pack();
+        this.mFrame.setLocationRelativeTo(null);
+        startTimer.schedule(new TimerTask() {
+            PGO pgo = (PGO) PGOStartScenario.getSingleton().getApp();
+
+            public void run() {
+                pgo.getPanelMgr().getStartPane().setVisible(false);
+                pgo.getFrame().remove(pgo.getPanelMgr().getStartPane());
+
+                pgo.getFrame().add(pgo.getPanelMgr().getHSBPanel(), BorderLayout.SOUTH);
+                pgo.getFrame().add(pgo.getPanelMgr().getTranslucentPane(), BorderLayout.CENTER);
+                pgo.getFrame().add(pgo.getPanelMgr().getImagePane(), BorderLayout.CENTER);
+
+                pgo.getFrame().setSize(DEFAULT_WINDOW_WIDTH / 2, DEFAULT_WINDOW_HEIGHT / 2);
+                pgo.getFrame().setLocationRelativeTo(null);
+                pgo.getFrame().setSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+                pgo.getFrame().setLocationRelativeTo(null);
+            }
+        }, 3000);
     }
 
     public static void main(String[] args) {

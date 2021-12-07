@@ -28,6 +28,12 @@ public class PGOPanelMgr {
         return this.mImagePane;
     }
 
+    private JPanel mStartPane = null;
+
+    public JPanel getStartPane() {
+        return this.mStartPane;
+    }
+
     private JLabel mImageLabel = null;
 
     public JLabel getImageLabel() {
@@ -115,6 +121,7 @@ public class PGOPanelMgr {
         // create components
         this.mTranslucentPane = new JPanel();
         this.mImagePane = new JPanel();
+        this.mStartPane = new JPanel();
         this.mTextLabel = new JLabel("Drop Image Here");
         this.mHSBPanel = new JPanel();
         this.mHueSlider = new JSlider(-360, 360, 0);
@@ -149,6 +156,16 @@ public class PGOPanelMgr {
         this.mImagePane.add(this.mTextLabel, BorderLayout.CENTER);
         this.mImagePane.setBorder(BorderFactory.createEmptyBorder(PGO.EMPTY_BORDER, 0, 0, 0));
 
+        // compose StartPane
+        JLabel startLogo = new JLabel();
+        ImageIcon logo = new ImageIcon(this.getClass().getResource("Spinner.gif"));
+        startLogo.setIcon(logo);
+        this.mStartPane.setBackground(Color.white);
+        startLogo.setVerticalAlignment(JLabel.CENTER);
+        startLogo.setHorizontalAlignment(JLabel.CENTER);
+        this.mStartPane.add(startLogo, BorderLayout.CENTER);
+
+        // compose HSBPanel
         JPanel HPanel = new JPanel();
         JPanel SPanel = new JPanel();
         JPanel BPanel = new JPanel();
@@ -177,10 +194,11 @@ public class PGOPanelMgr {
         this.mHSBPanel.add(BPanel);
         this.mHSBPanel.setVisible(false);
 
-        JFrame pgoFrame = pgo.getFrame();
-        pgoFrame.add(this.mHSBPanel, BorderLayout.SOUTH);
-        pgoFrame.add(this.mTranslucentPane, BorderLayout.CENTER);
-        pgoFrame.add(this.mImagePane, BorderLayout.CENTER);
+        // JFrame pgoFrame = pgo.getFrame();
+        // pgoFrame.add(this.mHSBPanel, BorderLayout.SOUTH);
+        // pgoFrame.add(this.mTranslucentPane, BorderLayout.CENTER);
+        // pgoFrame.add(this.mImagePane, BorderLayout.CENTER);
+        // pgoFrame.add(this.mStartPane, BorderLayout.CENTER);
     }
 
     public void setHSBPanelLayout(int axis) {
