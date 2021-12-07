@@ -6,14 +6,21 @@ import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import x.XApp;
 import x.XLogMgr;
 import x.XScenarioMgr;
 
 public class PGO extends XApp {
-    public static final int SLIDER_HEIGHT = 40;
-    
+    // constants
+    public static final int DEFAULT_WINDOW_WIDTH = 800;
+    public static final int DEFAULT_WINDOW_HEIGHT = 600;
+    public static final int DELTA_WINDOW_HEIGTH = 42;
+    public static final int SLIDER_HEIGHT = 29;
+    public static final int EMPTY_BORDER = -5;
+
+    // fields
     private JFrame mFrame = null;
     public JFrame getFrame() {
         return this.mFrame;
@@ -38,21 +45,6 @@ public class PGO extends XApp {
     private PGODragListener mDragListener = null;
     public PGODragListener getDragListener() {
         return this.mDragListener;
-    }
-    private PGOChangeListener mHueChangeListener = null;
-    public PGOChangeListener getHueChangeListener() {
-        return this.mHueChangeListener;
-    }
-    private PGOChangeListener mSatChangeListener = null;
-    public PGOChangeListener getSatChangeListener() {
-        return this.mSatChangeListener;
-    }
-    private PGOChangeListener mBriChangeListener = null;
-    public PGOChangeListener getBriChangeListener() {
-        return this.mBriChangeListener;
-    }
-    public PGOChangeListener getChangeListener() {
-        return this.mHueChangeListener;
     }
     
     private PGOPolygonMgr mPolygonMgr = null;
@@ -90,9 +82,6 @@ public class PGO extends XApp {
         this.mCanvas2D = new PGOCanvas2D(this);
         this.mEventListener = new PGOEventListener(this);
         this.mDragListener = new PGODragListener(this);
-        this.mHueChangeListener = new PGOChangeListener(this);
-        this.mSatChangeListener = new PGOChangeListener(this);
-        this.mBriChangeListener = new PGOChangeListener(this);
         this.mPolygonMgr = new PGOPolygonMgr();
         this.mScenarioMgr = new PGOScenarioMgr(this);
         this.mLogMgr = new XLogMgr();
@@ -106,11 +95,12 @@ public class PGO extends XApp {
                 
         // build and show visible components
         this.mCanvas2D.setOpaque(false);
+        this.mCanvas2D.setBorder(BorderFactory.createEmptyBorder(PGO.EMPTY_BORDER, 0, 0, 0));
         this.mFrame.add(this.mCanvas2D, BorderLayout.CENTER);
 
         this.mPanelMgr = new PGOPanelMgr(this);
-        
-        this.mFrame.setSize(800, 600);
+
+        this.mFrame.setSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
         this.mFrame.setLocationRelativeTo(null);
         this.mFrame.setResizable(false);
         this.mFrame.setVisible(true);

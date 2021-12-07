@@ -120,7 +120,7 @@ public class PGOColorScenario extends XScenario {
                 case KeyEvent.VK_C:
                     pgo.getPanelMgr().getHSBPanel().setVisible(false);
                     Dimension prevSize = pgo.getFrame().getSize();
-                    pgo.getFrame().setSize(prevSize.width, prevSize.height - PGO.SLIDER_HEIGHT);
+                    pgo.getFrame().setSize(prevSize.width, prevSize.height - PGO.DELTA_WINDOW_HEIGTH);
                     XCmdToChangeScene.execute(pgo, this.getReturnScene(), null);
                     break;
             }
@@ -240,7 +240,7 @@ public class PGOColorScenario extends XScenario {
                 case KeyEvent.VK_C:
                     pgo.getPanelMgr().getHSBPanel().setVisible(false);
                     Dimension prevSize = pgo.getFrame().getSize();
-                    pgo.getFrame().setSize(prevSize.width, prevSize.height - PGO.SLIDER_HEIGHT);
+                    pgo.getFrame().setSize(prevSize.width, prevSize.height - PGO.DELTA_WINDOW_HEIGTH);
                     pgo.getCanvas2D().setFocusable(true);
                     XCmdToChangeScene.execute(pgo, this.getReturnScene(), null);
                     break;
@@ -358,7 +358,7 @@ public class PGOColorScenario extends XScenario {
                 case KeyEvent.VK_C:
                     pgo.getPanelMgr().getHSBPanel().setVisible(false);
                     Dimension prevSize = pgo.getFrame().getSize();
-                    pgo.getFrame().setSize(prevSize.width, prevSize.height - PGO.SLIDER_HEIGHT);
+                    pgo.getFrame().setSize(prevSize.width, prevSize.height - PGO.DELTA_WINDOW_HEIGTH);
                     pgo.getCanvas2D().setFocusable(true);
                     XCmdToChangeScene.execute(pgo, this.getReturnScene(), null);
                     break;
@@ -477,7 +477,7 @@ public class PGOColorScenario extends XScenario {
                 case KeyEvent.VK_C:
                     pgo.getPanelMgr().getHSBPanel().setVisible(false);
                     Dimension prevSize = pgo.getFrame().getSize();
-                    pgo.getFrame().setSize(prevSize.width, prevSize.height - PGO.SLIDER_HEIGHT);
+                    pgo.getFrame().setSize(prevSize.width, prevSize.height - PGO.DELTA_WINDOW_HEIGTH);
                     pgo.getCanvas2D().setFocusable(true);
                     XCmdToChangeScene.execute(pgo, this.getReturnScene(), null);
                     break;
