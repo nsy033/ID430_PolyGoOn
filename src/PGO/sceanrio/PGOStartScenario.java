@@ -14,6 +14,8 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.io.File;
 import static java.lang.Double.min;
 import java.util.List;
@@ -139,13 +141,12 @@ public class PGOStartScenario extends XScenario {
             PGO pgo = (PGO) this.mScenario.getApp();
 
             if (this.mImageLabel == null) {
-                pgo.getCanvas2D().remove(pgo.getTextLabel());
+                pgo.getImagePane().remove(pgo.getTextLabel());
                 this.mPrevPath = path;
                 this.setImageLabel(path);
             } else {
                 if (!this.mPrevPath.equals(path)) {
-                    pgo.getFrame().remove(this.mImageLabel);
-                    pgo.getFrame().remove(pgo.getTranslucentPane());
+                    pgo.getImagePane().remove(this.mImageLabel);
                     this.mImageLabel = null;
                     this.mPrevPath = path;
                     this.setImageLabel(path);
@@ -159,7 +160,7 @@ public class PGOStartScenario extends XScenario {
 
             int imgWidth = image.getWidth(null);
             int imgHeight = image.getHeight(null);
-            double d = min(1280.0 / imgWidth, 1080.0 / imgHeight);
+            double d = min(1280.0 / imgWidth, 1000.0 / imgHeight);
             int width = (int) (imgWidth * d);
             int height = (int) (imgHeight * d);
             ImageIcon imageIcon = new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_DEFAULT));
@@ -167,24 +168,26 @@ public class PGOStartScenario extends XScenario {
             
             this.mImageLabel = new JLabel();
             this.mImageLabel.setIcon(imageIcon);
-            this.mImageLabel.setVerticalAlignment(JLabel.CENTER);
-            this.mImageLabel.setHorizontalAlignment(JLabel.CENTER);
+//            this.mImageLabel.setVerticalAlignment(JLabel.CENTER);
+//            this.mImageLabel.setHorizontalAlignment(JLabel.CENTER);
             if (pgo.getDeleteArea() != null) {
                 pgo.setDeleteArea(null);
             }
-            pgo.setDeleteArea(new Rectangle(width, height, 0, 0));
-            Point pt = new Point();
-            pt.x = (int) (width * 0.87);
-            pt.y = (int) (height * 0.65);
-            pgo.getDeleteArea().add(pt);
+            pgo.setDeleteArea(new Ellipse2D.Double((double) width - 0.5 * height , (double) height - 0.5 * height ,height, height));
+            pgo.getCanvas2D().setDeleteAreaPaint(new Point2D.Float(width, height), height);
+            // Point pt = new Point();
+            // pt.x = (int) (width * 0.87);
+            // pt.y = (int) (height * 0.65);
+            // pgo.getDeleteArea().add(pt);
             pgo.getCanvas2D().setSize(width, height);
+            pgo.getHSBPanel().setSize(width, PGO.SLIDER_HEIGHT);
             pgo.getTranslucentPane().setSize(width, height);
+            pgo.getImagePane().setSize(width, height);
 //            pgo.setFrameWidth(width);
 //            pgo.setFrameHeight(height);
-            pgo.getFrame().setSize(width, height);
+            pgo.getFrame().setSize(width, height + 20);
             pgo.getFrame().setLocationRelativeTo(null);
-            pgo.getFrame().add(pgo.getTranslucentPane(), BorderLayout.CENTER);
-            pgo.getFrame().add(this.mImageLabel, BorderLayout.CENTER);
+            pgo.getImagePane().add(this.mImageLabel, JLabel.CENTER);
         }
 
         @Override

@@ -88,21 +88,29 @@ public class PGOSaveScenario extends XScenario {
                     pgo.getCanvas2D().printAll(g);
                     g.dispose();
                     try {
-                    String[] pathList = pgo.getFilePath().split("/");
-                    String path = "";
-                    String name = pathList[pathList.length - 1].substring(0, pathList[pathList.length - 1].indexOf("."));
-                    for (int i = 0; i < pathList.length - 1; i++) {
-                        String p = pathList[i];
-                        path = path + p;
-                    }
+                        String[] pathList = pgo.getFilePath().split("/");
+                        String path = "";
+                        String name = pathList[pathList.length - 1].substring(0, pathList[pathList.length - 1].indexOf("."));
+                        for (int i = 0; i < pathList.length - 1; i++) {
+                            String p = pathList[i];
+                            path = path + "/" + p;
+                        }
                         ImageIO.write(captured, "png", new File(
                             path + "/" + name +"_PGO.png"));
                     } catch (IOException exp) {
                         exp.printStackTrace();
                     }
                     pgo.getCanvas2D().setOpaque(false);
-                    pgo.getImageLabel().setVisible(true);
+                    pgo.getImagePane().setVisible(true);
                     
+                    XCmdToChangeScene.execute(pgo,
+                        PGODefaultScenario.ReadyScene.getSingleton(),
+                        null);
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    pgo.getCanvas2D().remove(pgo.getTextLabel());
+                    pgo.getCanvas2D().setOpaque(false);
+                    pgo.getImagePane().setVisible(true);
                     XCmdToChangeScene.execute(pgo,
                         PGODefaultScenario.ReadyScene.getSingleton(),
                         null);

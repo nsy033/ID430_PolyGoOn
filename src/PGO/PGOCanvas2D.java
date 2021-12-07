@@ -3,11 +3,15 @@ package PGO;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.MultipleGradientPaint;
 import java.awt.Point;
+import java.awt.RadialGradientPaint;
 import java.awt.Stroke;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 
@@ -15,7 +19,6 @@ public class PGOCanvas2D extends JPanel {
     //constants
     private static final Color COLOR_PT_CURVE_DEFAULT = new Color(0, 0, 0, 60);
     public static final Color COLOR_INFO = new Color(255, 0, 0, 128);
-    private static final Color COLOR_DELETE_AREA = new Color(255, 0, 0, 20);
     
     private static final Stroke STROKE_PT_CURVE_DEFAULT = new BasicStroke(5f,
         BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
@@ -41,6 +44,12 @@ public class PGOCanvas2D extends JPanel {
     public Stroke getCurStrokeForPolygon() {
         return this.mCurStrokeForPolygon;
     }
+    private RadialGradientPaint mDeleteAreaPaint = null;
+    public void setDeleteAreaPaint(Point2D pt, int radius) {
+        float[] dist = {0.0f, 0.5f, 1.0f};
+        Color[] colors = {new Color(0, 0, 0, 128), new Color(0, 0, 0, 0), new Color(0, 0, 0, 0)};
+        this.mDeleteAreaPaint = new RadialGradientPaint(pt, (float) radius, dist, colors, MultipleGradientPaint.CycleMethod.NO_CYCLE);
+    }
     
     //constructor
     public PGOCanvas2D(PGO pgo) {
@@ -59,7 +68,7 @@ public class PGOCanvas2D extends JPanel {
         this.drawCurPolygon(gfx2);
         this.drawDraggedPolygon(gfx2);
         this.drawSelectedPolygons(gfx2);
-        this.drawInfo(gfx2);
+        // this.drawInfo(gfx2);
         
         PGOScene curScene = (PGOScene) this.mPGO.getScenarioMgr().getCurScene();
         curScene.renderScreenObjects(gfx2);
@@ -100,7 +109,7 @@ public class PGOCanvas2D extends JPanel {
             gfx2.setColor(draggedPolygon.getColor());
             gfx2.setStroke(draggedPolygon.getStroke());
             gfx2.fillPolygon(xPts, yPts, nPts);
-            gfx2.setColor(COLOR_DELETE_AREA);
+            gfx2.setPaint(this.mDeleteAreaPaint);
             gfx2.fill(this.mPGO.getDeleteArea());
         }
     }
