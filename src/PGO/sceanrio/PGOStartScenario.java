@@ -192,10 +192,12 @@ public class PGOStartScenario extends XScenario {
                     panelMgr.setHSBPanelLayout(0);
                     panelMgr.getHSBPanel().setSize(width, PGO.SLIDER_HEIGHT);
                     panelMgr.getHSBPanel().setLocation(0, height + PGO.SLIDER_HEIGHT);
+                    pgo.setDeltaFrameHeight(PGO.DELTA_WINDOW_HEIGTH_MIN);
                 } else {
                     panelMgr.setHSBPanelLayout(1);
                     panelMgr.getHSBPanel().setSize(width, PGO.SLIDER_HEIGHT * 3);
                     panelMgr.getHSBPanel().setLocation(0, height + PGO.SLIDER_HEIGHT * 3);
+                    pgo.setDeltaFrameHeight(PGO.DELTA_WINDOW_HEIGTH_MAX);
                 }
                 panelMgr.getTranslucentPane().setSize(width, height);
                 panelMgr.getImagePane().setSize(width, height);

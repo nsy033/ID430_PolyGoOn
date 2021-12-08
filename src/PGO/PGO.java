@@ -19,7 +19,8 @@ public class PGO extends XApp {
     // constants
     public static final int DEFAULT_WINDOW_WIDTH = 800;
     public static final int DEFAULT_WINDOW_HEIGHT = 600;
-    public static final int DELTA_WINDOW_HEIGTH = 42;
+    public static final int DELTA_WINDOW_HEIGTH_MIN = 50;
+    public static final int DELTA_WINDOW_HEIGTH_MAX = 120;
     public static final int TEXT_LABEL_HEIGHT = 250;
     public static final int SLIDER_HEIGHT = 29;
     public static final int SLIDER_WIDTH = 280;
@@ -29,67 +30,63 @@ public class PGO extends XApp {
 
     // fields
     private JFrame mFrame = null;
-
     public JFrame getFrame() {
         return this.mFrame;
     }
+    private int mDeltaFrameheight = 0;
+    public int getDeltaFrameHeight() {
+        return this.mDeltaFrameheight;
+    }
+    public void setDeltaFrameHeight(int delta) {
+        this.mDeltaFrameheight = delta;
+    }
 
     private Ellipse2D mDeleteArea = null;
-
     public Ellipse2D getDeleteArea() {
         return this.mDeleteArea;
     }
-
     public void setDeleteArea(Ellipse2D area) {
         this.mDeleteArea = area;
     }
 
     private PGOCanvas2D mCanvas2D = null;
-
     public PGOCanvas2D getCanvas2D() {
         return this.mCanvas2D;
     }
 
     private PGOEventListener mEventListener = null;
-
     public PGOEventListener getEventListener() {
         return this.mEventListener;
     }
 
     private PGODragListener mDragListener = null;
-
     public PGODragListener getDragListener() {
         return this.mDragListener;
     }
 
     private PGOPolygonMgr mPolygonMgr = null;
-
     public PGOPolygonMgr getPolygonMgr() {
         return this.mPolygonMgr;
     }
 
     private XScenarioMgr mScenarioMgr = null;
-
     @Override
     public XScenarioMgr getScenarioMgr() {
         return this.mScenarioMgr;
     }
 
     private XLogMgr mLogMgr = null;
-
     @Override
     public XLogMgr getLogMgr() {
         return this.mLogMgr;
     }
 
     private PGOCalcMgr mCalcMgr = null;
-
     public PGOCalcMgr getCalcMgr() {
         return this.mCalcMgr;
     }
 
     private PGOPanelMgr mPanelMgr = null;
-
     public PGOPanelMgr getPanelMgr() {
         return this.mPanelMgr;
     }
@@ -117,7 +114,7 @@ public class PGO extends XApp {
         // build and show visible components
         BorderLayout bLayout = new BorderLayout();
         this.mCanvas2D.setOpaque(false);
-        this.mCanvas2D.setBorder(BorderFactory.createEmptyBorder(PGO.EMPTY_BORDER, 0, 0, 0));
+        // this.mCanvas2D.setBorder(BorderFactory.createEmptyBorder(PGO.EMPTY_BORDER, 0, 0, 0));
         this.mFrame.setLayout(bLayout);
         this.mFrame.add(this.mCanvas2D, BorderLayout.CENTER);
 

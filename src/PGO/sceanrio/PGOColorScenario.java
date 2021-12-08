@@ -128,7 +128,8 @@ public class PGOColorScenario extends XScenario {
                     pgo.getPanelMgr().getHSBPanel().setVisible(false);
                     Dimension prevSize = pgo.getFrame().getSize();
                     pgo.getFrame().setSize(prevSize.width,
-                            prevSize.height - pgo.getPanelMgr().getHSBPanel().getHeight());
+                            // prevSize.height - pgo.getPanelMgr().getHSBPanel().getHeight());
+                            prevSize.height - pgo.getDeltaFrameHeight());
                     XCmdToChangeScene.execute(pgo, this.getReturnScene(), null);
                     break;
             }
@@ -253,7 +254,8 @@ public class PGOColorScenario extends XScenario {
                     pgo.getPanelMgr().getHSBPanel().setVisible(false);
                     Dimension prevSize = pgo.getFrame().getSize();
                     pgo.getFrame().setSize(prevSize.width,
-                            prevSize.height - pgo.getPanelMgr().getHSBPanel().getHeight());
+                            // prevSize.height - pgo.getPanelMgr().getHSBPanel().getHeight());
+                            prevSize.height - pgo.getDeltaFrameHeight());
                     pgo.getCanvas2D().setFocusable(true);
                     XCmdToChangeScene.execute(pgo, this.getReturnScene(), null);
                     break;
@@ -376,7 +378,8 @@ public class PGOColorScenario extends XScenario {
                     pgo.getPanelMgr().getHSBPanel().setVisible(false);
                     Dimension prevSize = pgo.getFrame().getSize();
                     pgo.getFrame().setSize(prevSize.width,
-                            prevSize.height - pgo.getPanelMgr().getHSBPanel().getHeight());
+                            // prevSize.height - pgo.getPanelMgr().getHSBPanel().getHeight());
+                            prevSize.height - pgo.getDeltaFrameHeight());
                     pgo.getCanvas2D().setFocusable(true);
                     XCmdToChangeScene.execute(pgo, this.getReturnScene(), null);
                     break;
@@ -499,7 +502,8 @@ public class PGOColorScenario extends XScenario {
                     pgo.getPanelMgr().getHSBPanel().setVisible(false);
                     Dimension prevSize = pgo.getFrame().getSize();
                     pgo.getFrame().setSize(prevSize.width,
-                            prevSize.height - pgo.getPanelMgr().getHSBPanel().getHeight());
+                            // prevSize.height - pgo.getPanelMgr().getHSBPanel().getHeight());
+                            prevSize.height - pgo.getDeltaFrameHeight());
                     pgo.getCanvas2D().setFocusable(true);
                     XCmdToChangeScene.execute(pgo, this.getReturnScene(), null);
                     break;

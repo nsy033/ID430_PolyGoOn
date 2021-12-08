@@ -109,7 +109,9 @@ public class PGODefaultScenario extends XScenario {
                 case KeyEvent.VK_C:
                     Dimension prevSize = pgo.getFrame().getSize();
                     pgo.getFrame().setSize(prevSize.width,
-                            prevSize.height + pgo.getPanelMgr().getHSBPanel().getHeight());
+                            // prevSize.height + pgo.getPanelMgr().getHSBPanel().getHeight());
+                            prevSize.height + pgo.getDeltaFrameHeight());
+                    panelMgr.getHSBPanel().setVisible(true);
                     XCmdToChangeScene.execute(pgo,
                             PGOColorScenario.ColorReadyScene.getSingleton(),
                             this);
