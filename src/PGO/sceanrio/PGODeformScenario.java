@@ -124,7 +124,7 @@ public class PGODeformScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
         }
 
         @Override
@@ -204,10 +204,10 @@ public class PGODeformScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
-            Point pt = e.getPoint();
+            // Point pt = e.getPoint();
             Point prevPt = PGODeformScenario.getSingleton().getPrevPt();
             
             for (PGOPolygon polygon : polygonMgr.getSelectedPolygons()) {
@@ -441,7 +441,7 @@ public class PGODeformScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
         }
 
         @Override
@@ -515,9 +515,9 @@ public class PGODeformScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            Point pt = e.getPoint();
+            // Point pt = e.getPoint();
             boolean anySelected = false;
             
             if (pt.distance(PGODeformScenario.getSingleton().getPrevPt()) > 10) {
@@ -631,10 +631,10 @@ public class PGODeformScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
-            Point pt = e.getPoint();
+            // Point pt = e.getPoint();
             Point prevPt = PGODeformScenario.getSingleton().getPrevPt();
             
             for (PGOPolygon polygon : polygonMgr.getSelectedPolygons()) {

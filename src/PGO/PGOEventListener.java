@@ -2,6 +2,8 @@ package PGO;
 
 import PGO.sceanrio.PGODefaultScenario;
 import PGO.sceanrio.PGODeleteScenario;
+
+import java.awt.AWTException;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -9,6 +11,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.TimerTask;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import java.awt.Robot;
 
 public class PGOEventListener implements MouseListener, MouseMotionListener,
     KeyListener {
@@ -23,6 +30,7 @@ public class PGOEventListener implements MouseListener, MouseMotionListener,
         return this.mMouseLastPt;
     }
     private java.util.Timer mTimer = null;
+    private Robot mRobot = null;
     
     // constructor
     public PGOEventListener(PGO pgo) {
@@ -58,14 +66,23 @@ public class PGOEventListener implements MouseListener, MouseMotionListener,
             },600,500);
         }
         
+        try {
+            this.mRobot = new Robot();
+        } catch (AWTException e1) {
+            e1.printStackTrace();
+        }
     }
     
     @Override
     public void mouseDragged(MouseEvent e) {
+        JPanel pgoCanvas = this.mPGO.getCanvas2D();
         this.mMouseLastPt = e.getPoint();
+        
+        Point newPt = this.mPGO.getCalcMgr().isValidPt(e.getPoint());
+        
         PGOScene curScene =
             (PGOScene) this.mPGO.getScenarioMgr().getCurScene();
-        curScene.handleMouseDrag(e);
+        curScene.handleMouseDrag(newPt);
         this.mPGO.getCanvas2D().repaint();
     }
 

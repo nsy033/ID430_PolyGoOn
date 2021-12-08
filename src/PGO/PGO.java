@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-
 import PGO.sceanrio.PGOStartScenario;
 import x.XApp;
 import x.XLogMgr;
@@ -114,7 +113,7 @@ public class PGO extends XApp {
         // build and show visible components
         BorderLayout bLayout = new BorderLayout();
         this.mCanvas2D.setOpaque(false);
-        // this.mCanvas2D.setBorder(BorderFactory.createEmptyBorder(PGO.EMPTY_BORDER, 0, 0, 0));
+        this.mCanvas2D.setBorder(BorderFactory.createEmptyBorder(PGO.EMPTY_BORDER, 0, 0, 0));
         this.mFrame.setLayout(bLayout);
         this.mFrame.add(this.mCanvas2D, BorderLayout.CENTER);
 

@@ -4,6 +4,7 @@ import PGO.PGO;
 import PGO.PGOPolygon;
 import PGO.PGOScene;
 import PGO.PGOPanelMgr;
+import java.awt.Point;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -107,7 +108,7 @@ public class PGOColorScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
         }
 
         @Override
@@ -228,7 +229,7 @@ public class PGOColorScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
         }
 
         @Override
@@ -352,7 +353,7 @@ public class PGOColorScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
         }
 
         @Override
@@ -476,7 +477,7 @@ public class PGOColorScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
         }
 
         @Override

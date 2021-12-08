@@ -1,6 +1,7 @@
 package PGO.sceanrio;
 
 import PGO.PGOScene;
+import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -53,7 +54,7 @@ public class PGOEmptyScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
         }
 
         @Override

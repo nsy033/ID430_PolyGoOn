@@ -93,7 +93,7 @@ public class PGODeleteScenario extends XScenario {
          }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
         }
 
         @Override
@@ -157,10 +157,10 @@ public class PGODeleteScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGODeleteScenario scenario = PGODeleteScenario.getSingleton();
-            Point pt = e.getPoint();
+            // Point pt = e.getPoint();
             if (pgo.getPolygonMgr().getDraggedPolygon() != null) {
                     pgo.getPolygonMgr().getDraggedPolygon().translatePolygon(
                         pt.getX() - scenario.lastLocation.getX(),
@@ -173,7 +173,8 @@ public class PGODeleteScenario extends XScenario {
         public void handleMouseRelease(MouseEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGODeleteScenario scenario = PGODeleteScenario.getSingleton();
-            Point pt = e.getPoint();
+            // Point pt = e.getPoint();
+            Point pt = pgo.getCalcMgr().isValidPt(e.getPoint());
             
             if (!pgo.getDeleteArea().contains(pt)) {
                 pgo.getPolygonMgr().getDraggedPolygon().translatePolygon(
@@ -229,7 +230,6 @@ public class PGODeleteScenario extends XScenario {
 
         @Override
         public void handleChange(ChangeEvent e) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
     }
 }

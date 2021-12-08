@@ -69,10 +69,10 @@ public class PGOCreatePolygonScenario extends XScenario {
         }
 
         @Override
-        public synchronized void handleMouseDrag(MouseEvent e) {
+        public synchronized void handleMouseDrag(Point pt) {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
-            Point pt = e.getPoint();
+            // Point pt = e.getPoint();
             ArrayList<PGOPolygon> polygons = polygonMgr.getPolygons();
             if (!pgo.getCalcMgr().contained(pt, polygons)) {
                 pt = pgo.findNearPt(pt);
@@ -166,7 +166,7 @@ public class PGOCreatePolygonScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
         }
 
         @Override
@@ -237,11 +237,11 @@ public class PGOCreatePolygonScenario extends XScenario {
         }
 
         @Override
-        public synchronized void handleMouseDrag(MouseEvent e) {
+        public synchronized void handleMouseDrag(Point pt) {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
             
-            Point pt = e.getPoint();
+            // Point pt = e.getPoint();
             ArrayList<PGOPolygon> polygons = polygonMgr.getPolygons();
             Line2D.Double line = new Line2D.Double();
             line.setLine((Point2D) pt, (Point2D) polygonMgr.getCurPolygon().getPts().get(0));
@@ -356,7 +356,7 @@ public class PGOCreatePolygonScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
         }
 
         @Override
@@ -427,10 +427,10 @@ public class PGOCreatePolygonScenario extends XScenario {
         }
 
         @Override
-        public synchronized void handleMouseDrag(MouseEvent e) {
+        public synchronized void handleMouseDrag(Point pt) {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
-            Point pt = e.getPoint();
+            // Point pt = e.getPoint();
             ArrayList<PGOPolygon> polygons = polygonMgr.getPolygons();
 
             PGOPolygon tempPolygon = polygonMgr.getCurPolygon().clonePolygon();
@@ -462,15 +462,15 @@ public class PGOCreatePolygonScenario extends XScenario {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
             
-            if (pgo.getCalcMgr().validPolygon(polygonMgr.getCurPolygon())) {
+            // if (pgo.getCalcMgr().validPolygon(polygonMgr.getCurPolygon())) {
                 Color c = polygonMgr.getCurPolygon().getBgColor(pgo);
             
                 polygonMgr.getCurPolygon().setColor(c);
                 polygonMgr.getPolygons().add(polygonMgr.getCurPolygon());
                 polygonMgr.getFixedPts().addAll(polygonMgr.getCurPolygon().getPts());
-            } else {
-                pgo.vibrate();
-            }
+            // } else {
+            //     pgo.vibrate();
+            // }
             
             
             polygonMgr.setCurPolygon(null);

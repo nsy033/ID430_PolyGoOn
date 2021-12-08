@@ -136,6 +136,25 @@ public class PGOCalcMgr {
         }
         return false;
     }
+
+    public Point isValidPt(Point oldPt) {
+        PGOCanvas2D pgoCanvas = this.mPGO.getCanvas2D();
+        Point newPt = oldPt;
+
+        if (oldPt.getX() > pgoCanvas.getWidth()) {
+            newPt.x = pgoCanvas.getWidth();
+        } else if (oldPt.getX() < 0) {
+            newPt.x = 0;
+        }
+
+        if (oldPt.getY() > pgoCanvas.getHeight()) {
+            newPt.y = pgoCanvas.getHeight();
+        } else if (oldPt.getY() < 0) {
+            newPt.y = 0;
+        }
+
+        return newPt;
+    }
     
     public boolean validPolygon(PGOPolygon polygon) {
         ArrayList<Point> points = polygon.getPts();
@@ -166,10 +185,6 @@ public class PGOCalcMgr {
         } else if (minHeight < PGOCalcMgr.MIN_VISIBLE_HEIGHT) {
             return false;
         } else if (ratio_length < PGOCalcMgr.MIN_RATIO_LENGTH) {
-            return false;
-        } else if (!this.mPGO.getFrame().contains((Point) pt1) ||
-            !this.mPGO.getFrame().contains((Point) pt2) ||
-            !this.mPGO.getFrame().contains((Point) pt3)) {
             return false;
         }
         return true;

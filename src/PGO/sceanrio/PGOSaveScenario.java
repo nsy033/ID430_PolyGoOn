@@ -4,6 +4,7 @@ import PGO.PGO;
 import PGO.PGOPanelMgr;
 import PGO.PGOScene;
 import javax.swing.event.ChangeEvent;
+import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -60,7 +61,7 @@ public class PGOSaveScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
         }
 
         @Override

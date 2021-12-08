@@ -3,6 +3,7 @@ package PGO.sceanrio;
 import PGO.PGO;
 import PGO.PGOPanelMgr;
 import PGO.PGOScene;
+import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
@@ -16,7 +17,6 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import static java.lang.Double.min;
 import java.util.List;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
@@ -76,7 +76,7 @@ public class PGOStartScenario extends XScenario {
         }
 
         @Override
-        public void handleMouseDrag(MouseEvent e) {
+        public void handleMouseDrag(Point pt) {
         }
 
         @Override
