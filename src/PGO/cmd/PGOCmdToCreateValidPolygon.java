@@ -27,9 +27,9 @@ public class PGOCmdToCreateValidPolygon extends XLoggableCmd {
         PGO pgo = (PGO) this.mApp;
         PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
         curPolygon = polygonMgr.getCurPolygon();
-        Color c = pgo.getColorCalcMgr().getBgColor(pgo, curPolygon);
 
         if (pgo.getPolygonCalcMgr().isValidPolygon(curPolygon)){
+            Color c = pgo.getColorCalcMgr().getBgColor(pgo, curPolygon);
             polygonMgr.getCurPolygon().setColor(c);
             polygonMgr.getPolygons().add(curPolygon);
             polygonMgr.getFixedPts().addAll(curPolygon.getPts());

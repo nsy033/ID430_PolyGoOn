@@ -154,14 +154,16 @@ public class PGOPolygonCalcMgr {
         double base = Double.MIN_VALUE;
         double min = Double.MAX_VALUE;
         double minHeight = Double.MAX_VALUE;
+        double sum = 0;
         
         for (int i = 0; i < 3; i ++) {
             Point2D pt1 = points.get(i % 3);
             Point2D pt2 = points.get((i + 1) % 3);
             Point2D pt3 = points.get((i + 2) % 3);
             distance[i] = pt1.distance(pt2);
-            double m = (pt2.getY() - pt1.getY()) / (pt2.getX() - pt1.getX());
+            sum = sum + distance[i];
             
+            double m = (pt2.getY() - pt1.getY()) / (pt2.getX() - pt1.getX());
             double height = Math.abs(-m * pt3.getX() + pt3.getY() +
                 m * pt1.getX() - pt1.getY()) /
                 Math.sqrt(1 + Math.pow(m, 2));
@@ -171,7 +173,7 @@ public class PGOPolygonCalcMgr {
             if (minHeight > height) minHeight = height;
         }
         
-        double rest = distance[0] + distance[1] + distance[2] - base;
+        double rest = sum - base;
         double ratio_sum = rest / base;
         double ratio_length = min / base;
         
@@ -180,6 +182,8 @@ public class PGOPolygonCalcMgr {
         } else if (minHeight < PGOPolygonCalcMgr.MIN_VISIBLE_HEIGHT) {
             return false;
         } else if (ratio_length < PGOPolygonCalcMgr.MIN_RATIO_LENGTH) {
+            return false;
+        } else if (rest <= base) {
             return false;
         }
         return true;
