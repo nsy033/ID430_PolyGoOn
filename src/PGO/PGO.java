@@ -34,6 +34,12 @@ public class PGO extends XApp {
         return this.mFrame;
     }
 
+    private JFrame mStartFrame = null;
+
+    public JFrame getStartFrame() {
+        return this.mStartFrame;
+    }
+
     private Ellipse2D mDeleteArea = null;
 
     public Ellipse2D getDeleteArea() {
@@ -100,6 +106,7 @@ public class PGO extends XApp {
         // 1. frmae 2. canvas 3. other components
         // 4. event listeners 5. managers (except panelMgr)
         this.mFrame = new JFrame("Poly-Go-On");
+        this.mStartFrame = new JFrame("Poly-Go-On");
         this.mCanvas2D = new PGOCanvas2D(this);
         this.mEventListener = new PGOEventListener(this);
         this.mDragListener = new PGODragListener(this);
@@ -122,10 +129,20 @@ public class PGO extends XApp {
         this.mFrame.add(this.mCanvas2D, BorderLayout.CENTER);
 
         this.mPanelMgr = new PGOPanelMgr(this);
+        this.mFrame.add(this.mPanelMgr.getHSBPanel(), BorderLayout.SOUTH);
+        this.mFrame.add(this.mPanelMgr.getTranslucentPane(), BorderLayout.CENTER);
+        this.mFrame.add(this.mPanelMgr.getImagePane(), BorderLayout.CENTER);
 
+        this.mFrame.setSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
         this.mFrame.setResizable(false);
-        this.mFrame.setVisible(true);
+        this.mFrame.setVisible(false);
+        this.mFrame.setLocationRelativeTo(null);
         this.mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        this.mStartFrame.setResizable(false);
+        this.mStartFrame.setUndecorated(true);
+        this.mStartFrame.setVisible(true);
+        this.mStartFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         this.startProgram();
     }
@@ -133,24 +150,17 @@ public class PGO extends XApp {
     private void startProgram() {
         java.util.Timer startTimer = new java.util.Timer();
 
-        this.mFrame.add(this.mPanelMgr.getStartPane(), BorderLayout.CENTER);
-        this.mFrame.pack();
-        this.mFrame.setLocationRelativeTo(null);
+        this.mStartFrame.add(this.mPanelMgr.getStartPane(), BorderLayout.CENTER);
+        this.mStartFrame.pack();
+        this.mStartFrame.setLocationRelativeTo(null);
         startTimer.schedule(new TimerTask() {
             PGO pgo = (PGO) PGOStartScenario.getSingleton().getApp();
 
             public void run() {
                 pgo.getPanelMgr().getStartPane().setVisible(false);
-                pgo.getFrame().remove(pgo.getPanelMgr().getStartPane());
-
-                pgo.getFrame().add(pgo.getPanelMgr().getHSBPanel(), BorderLayout.SOUTH);
-                pgo.getFrame().add(pgo.getPanelMgr().getTranslucentPane(), BorderLayout.CENTER);
-                pgo.getFrame().add(pgo.getPanelMgr().getImagePane(), BorderLayout.CENTER);
-
-                pgo.getFrame().setSize(DEFAULT_WINDOW_WIDTH / 2, DEFAULT_WINDOW_HEIGHT / 2);
-                pgo.getFrame().setLocationRelativeTo(null);
-                pgo.getFrame().setSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
-                pgo.getFrame().setLocationRelativeTo(null);
+                pgo.getStartFrame().remove(pgo.getPanelMgr().getStartPane());
+                pgo.getStartFrame().setVisible(false);
+                pgo.getFrame().setVisible(true);
             }
         }, 3000);
     }
