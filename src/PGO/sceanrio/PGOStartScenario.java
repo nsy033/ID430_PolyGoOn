@@ -91,24 +91,31 @@ public class PGOStartScenario extends XScenario {
         private boolean mCtrlPressed = false;
 
         private String mFilePath = null;
+
         public String getFilePath() {
             return this.mFilePath;
         }
+
         public void setFilePath(String path) {
             this.mFilePath = path;
         }
+
         private String mFileName = null;
+
         public String getFileName() {
             return this.mFileName;
         }
+
         public void setFileName(String name) {
             this.mFileName = name;
         }
 
         private String mExtenstion = null;
+
         public String getExtenstion() {
             return this.mExtenstion;
         }
+
         public void setExtenstion(String ext) {
             this.mExtenstion = ext;
         }
@@ -138,8 +145,8 @@ public class PGOStartScenario extends XScenario {
                     if (this.mCtrlPressed) {
                         PGOCmdToImportJSON.execute(pgo);
                         XCmdToChangeScene.execute(pgo,
-                            PGODefaultScenario.ReadyScene.getSingleton(),
-                            null);
+                                PGODefaultScenario.ReadyScene.getSingleton(),
+                                null);
                     }
                     break;
             }

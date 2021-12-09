@@ -12,14 +12,14 @@ import java.util.ArrayList;
 import x.XApp;
 import x.XLoggableCmd;
 
-public class PGOCmdToCheckAndUpdateSelectedPolygons extends XLoggableCmd {
+public class PGOCmdToCheckAndUpdateSeparatedPolygon extends XLoggableCmd {
     // private constructor
-    private PGOCmdToCheckAndUpdateSelectedPolygons(XApp app) {
+    private PGOCmdToCheckAndUpdateSeparatedPolygon(XApp app) {
         super(app);
     }
 
     public static boolean execute(XApp app) {
-        PGOCmdToCheckAndUpdateSelectedPolygons cmd = new PGOCmdToCheckAndUpdateSelectedPolygons(app);
+        PGOCmdToCheckAndUpdateSeparatedPolygon cmd = new PGOCmdToCheckAndUpdateSeparatedPolygon(app);
         return cmd.execute();
     }
 
@@ -28,40 +28,30 @@ public class PGOCmdToCheckAndUpdateSelectedPolygons extends XLoggableCmd {
         PGO pgo = (PGO) this.mApp;
         boolean anyIntersected = false;
         PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
-
-        ArrayList<PGOPolygon> polygons = (ArrayList<PGOPolygon>) polygonMgr.getSelectedPolygons().clone();
-        polygons.addAll((ArrayList<PGOPolygon>) polygonMgr.getPolygons().clone());
-        ArrayList<PGOPolygon> polygons2 = (ArrayList<PGOPolygon>) polygons.clone();
-        for (PGOPolygon polygon : polygons) {
-            polygons2.remove(polygon);
-            if (PGOPolygonCalcMgr.isIntersected(polygon, polygons2)) {
+        for (PGOPolygon polygon : polygonMgr.getSelectedPolygons()) {
+            if (PGOPolygonCalcMgr.isIntersected(polygon, polygonMgr.getPolygons())) {
                 anyIntersected = true;
-                polygons2.add(polygon);
                 break;
             }
-            polygons2.add(polygon);
         }
         if (anyIntersected || !PGOPolygonCalcMgr.areValidPolygons(
                 polygonMgr.getSelectedPolygons())) {
-            polygonMgr.getPolygons()
-                    .addAll((ArrayList<PGOPolygon>) PGODeformScenario.getSingleton().getPrevPolygons().clone());
+            polygonMgr.getPolygons().add(PGODeformScenario.getSingleton().getPrevPolygon().clonePolygon());
             polygonMgr.setFixedPts((ArrayList<Point>) PGODeformScenario.getSingleton().getPrevPts().clone());
-
             pgo.vibrate();
         } else {
-            pgo.getPolygonMgr().getPolygons().addAll(
-                    polygonMgr.getSelectedPolygons());
-
-            for (PGOPolygon polygon : polygonMgr.getPolygons()) {
+            for (PGOPolygon polygon : polygonMgr.getSelectedPolygons()) {
                 Color c = pgo.getColorCalcMgr().getBgColor(pgo, polygon);
                 polygon.setColor(c);
             }
+            polygonMgr.getPolygons().addAll(
+                    polygonMgr.getSelectedPolygons());
         }
 
-        pgo.getPolygonMgr().getSelectedPolygons().clear();
-        PGODeformScenario.getSingleton().setPrevPolygons(null);
-        PGODeformScenario.getSingleton().setPrevPts(null);
+        polygonMgr.getSelectedPolygons().clear();
         PGODeformScenario.getSingleton().setPrevPt(null);
+        PGODeformScenario.getSingleton().setPrevPts(null);
+        PGODeformScenario.getSingleton().setPrevPolygon(null);
         return true;
     }
 

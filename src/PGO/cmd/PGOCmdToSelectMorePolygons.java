@@ -1,6 +1,7 @@
 package PGO.cmd;
 
 import PGO.PGO;
+import PGO.PGOEventListener;
 import PGO.PGOPolygon;
 import PGO.PGOPolygonCalcMgr;
 import PGO.PGOPolygonMgr;
@@ -30,13 +31,11 @@ public class PGOCmdToSelectMorePolygons extends XLoggableCmd {
     @Override
     protected boolean defineCmd() {
         PGO pgo = (PGO) this.mApp;
+        pgo.getLogMgr().setPrintOn(true);
         PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
         Point nearPt = PGOPolygonCalcMgr.findNearPt(this.mPt, pgo.getPolygonMgr().getFixedPts());
         Rectangle boundingBox = new Rectangle(nearPt.x - 100, nearPt.y - 100, 200, 200);
         ArrayList<PGOPolygon> newSelectedPolygons = new ArrayList<PGOPolygon>();
-
-        PGODeformScenario.getSingleton().setPrevPolygons(new ArrayList<PGOPolygon>());
-        PGODeformScenario.getSingleton().setPrevPts((ArrayList<Point>) pgo.getPolygonMgr().getFixedPts().clone());
 
         if (pgo.getPolygonMgr().getFixedPts().contains(nearPt)) {
             for (PGOPolygon polygon : pgo.getPolygonMgr().getPolygons()) {
@@ -58,6 +57,13 @@ public class PGOCmdToSelectMorePolygons extends XLoggableCmd {
             newSelectedPolygons.clear();
         }
         PGODeformScenario.getSingleton().setPrevPt(this.mPt);
+
+        if (pgo.getEventListener().getMousePrevPt().distance(mPt.getX(),
+                mPt.getY()) > PGOEventListener.MIN_DISTANCE_FOR_LOGGING) {
+            pgo.getEventListener().setMousePrevPt(mPt);
+        } else {
+            pgo.getLogMgr().setPrintOn(false);
+        }
         return true;
     }
 

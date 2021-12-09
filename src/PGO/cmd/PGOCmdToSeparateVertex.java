@@ -5,22 +5,23 @@ import PGO.PGOEventListener;
 import PGO.PGOPolygon;
 import PGO.PGOPolygonMgr;
 import PGO.sceanrio.PGODeformScenario;
+
 import java.awt.Point;
 import x.XApp;
 import x.XLoggableCmd;
 
-public class PGOCmdToUpdateSelectedPolygons extends XLoggableCmd {
+public class PGOCmdToSeparateVertex extends XLoggableCmd {
     // field
     private Point mPt = null;
 
     // private constructor
-    private PGOCmdToUpdateSelectedPolygons(XApp app, Point pt) {
+    private PGOCmdToSeparateVertex(XApp app, Point pt) {
         super(app);
         this.mPt = pt;
     }
 
     public static boolean execute(XApp app, Point pt) {
-        PGOCmdToUpdateSelectedPolygons cmd = new PGOCmdToUpdateSelectedPolygons(app, pt);
+        PGOCmdToSeparateVertex cmd = new PGOCmdToSeparateVertex(app, pt);
         return cmd.execute();
     }
 
@@ -37,7 +38,7 @@ public class PGOCmdToUpdateSelectedPolygons extends XLoggableCmd {
             polygon.updateBoundingBox(polygon.getPts());
             polygonMgr.getFixedPts().set(ptIndexInFixedPts, this.mPt);
         }
-
+        PGODeformScenario.getSingleton().setPrevPt(this.mPt);
         if (pgo.getEventListener().getMousePrevPt().distance(mPt.getX(),
                 mPt.getY()) > PGOEventListener.MIN_DISTANCE_FOR_LOGGING) {
             pgo.getEventListener().setMousePrevPt(mPt);
@@ -50,7 +51,7 @@ public class PGOCmdToUpdateSelectedPolygons extends XLoggableCmd {
     @Override
     protected String createLog() {
         StringBuffer sb = new StringBuffer();
-        sb.append(this.getClass().getSimpleName()).append("\t");
+        sb.append(this.getClass().getSimpleName());
         sb.append(this.mPt);
         return sb.toString();
     }

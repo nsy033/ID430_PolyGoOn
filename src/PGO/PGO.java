@@ -1,8 +1,11 @@
 package PGO;
 
 import java.awt.BorderLayout;
+import java.awt.Image;
 import java.awt.geom.Ellipse2D;
+
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import x.XApp;
 import x.XLogMgr;
@@ -146,6 +149,8 @@ public class PGO extends XApp {
         this.mSliderMgr = new PGOSliderMgr(this);
         this.mPanelMgr = new PGOPanelMgr(this);
 
+        Image image = new ImageIcon("./logo.png").getImage();
+        this.mFrame.setIconImage(image);
         this.mFrame.setSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
         this.mFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.mFrame.setResizable(false);

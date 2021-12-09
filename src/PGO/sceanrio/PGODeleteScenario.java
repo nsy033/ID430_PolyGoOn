@@ -4,6 +4,10 @@ import PGO.PGO;
 import PGO.PGOPolygon;
 import PGO.PGOPolygonCalcMgr;
 import PGO.PGOScene;
+import PGO.cmd.PGOCmdToDeletePolygon;
+import PGO.cmd.PGOCmdToDetectLongPressedPolygon;
+import PGO.cmd.PGOCmdToDragPolygon;
+
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -40,8 +44,44 @@ public class PGODeleteScenario extends XScenario {
     }
 
     private PGOPolygon draggedPolygon = null;
+
+    public PGOPolygon getDraggedPolygon() {
+        return this.draggedPolygon;
+    }
+
+    public void setDraggedPolygon(PGOPolygon polygon) {
+        this.draggedPolygon = polygon;
+    }
+
     private Point firstLocation = null;
+
+    public Point getFirstLocation() {
+        return this.firstLocation;
+    }
+
+    public void setFirstLocation(Point fst) {
+        this.firstLocation = fst;
+    }
+
     private Point lastLocation = null;
+
+    public Point getLastLocation() {
+        return this.lastLocation;
+    }
+
+    public void setLastLocation(Point lst) {
+        this.lastLocation = lst;
+    }
+
+    private boolean contained = false;
+
+    public boolean getContained() {
+        return this.contained;
+    }
+
+    public void setContained(boolean state) {
+        this.contained = state;
+    }
 
     public static class DeleteReadyScene extends PGOScene {
         // singleton pattern
@@ -69,26 +109,8 @@ public class PGODeleteScenario extends XScenario {
         public void handleMouseLongPress(Point pressedPt, Point pt) {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGODeleteScenario scenario = PGODeleteScenario.getSingleton();
-            boolean contained = false;
-            for (PGOPolygon polygon : pgo.getPolygonMgr().getPolygons()) {
-                pgo.getPolygonCalcMgr();
-                if (PGOPolygonCalcMgr.checkContent(pressedPt, polygon)) {
-                    pgo.getPolygonCalcMgr();
-                    if (PGOPolygonCalcMgr.checkContent(pt, polygon)) {
-                        pgo.getPolygonMgr().setDraggedPolygon(polygon);
-                        pgo.getPolygonMgr().getPolygons().remove(pgo.getPolygonMgr().getDraggedPolygon());
-
-                        scenario.firstLocation = pressedPt;
-                        scenario.lastLocation = pressedPt;
-
-                        contained = true;
-                        break;
-                    } else {
-                        break;
-                    }
-                }
-            }
-            if (contained) {
+            PGOCmdToDetectLongPressedPolygon.execute(pgo, pressedPt, pt);
+            if (scenario.getContained()) {
                 XCmdToChangeScene.execute(pgo,
                         PGODeleteScenario.DeleteScene.getSingleton(),
                         this.mReturnScene);
@@ -167,47 +189,14 @@ public class PGODeleteScenario extends XScenario {
         @Override
         public void handleMouseDrag(Point pt) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            PGODeleteScenario scenario = PGODeleteScenario.getSingleton();
-            // Point pt = e.getPoint();
-            if (pgo.getPolygonMgr().getDraggedPolygon() != null) {
-                pgo.getPolygonMgr().getDraggedPolygon().translatePolygon(
-                        pt.getX() - scenario.lastLocation.getX(),
-                        pt.getY() - scenario.lastLocation.getY());
-                scenario.lastLocation = pt;
-            }
+            PGOCmdToDragPolygon.execute(pgo, pt);
         }
 
         @Override
         public void handleMouseRelease(MouseEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            PGODeleteScenario scenario = PGODeleteScenario.getSingleton();
-            pgo.getPolygonCalcMgr();
-            // Point pt = e.getPoint();
-            Point pt = PGOPolygonCalcMgr.isValidPt(e.getPoint(), pgo.getCanvas2D().getWidth(),
-                    pgo.getCanvas2D().getHeight());
-
-            if (!pgo.getDeleteArea().contains(pt)) {
-                pgo.getPolygonMgr().getDraggedPolygon().translatePolygon(
-                        scenario.firstLocation.getX() - pt.getX(),
-                        scenario.firstLocation.getY() - pt.getY());
-
-                pgo.getPolygonMgr().getPolygons().add(pgo.getPolygonMgr().getDraggedPolygon());
-                pgo.getPolygonMgr().setDraggedPolygon(null);
-                scenario.firstLocation = null;
-                scenario.lastLocation = null;
-
-                pgo.vibrate();
-
-                XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
-            } else {
-                pgo.getPolygonMgr().getFixedPts().removeAll(pgo.getPolygonMgr().getDraggedPolygon().getPts());
-                pgo.getPolygonMgr().setDraggedPolygon(null);
-                scenario.firstLocation = null;
-                scenario.lastLocation = null;
-
-                XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
-            }
-
+            PGOCmdToDeletePolygon.execute(pgo, e.getPoint());
+            XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
         }
 
         @Override

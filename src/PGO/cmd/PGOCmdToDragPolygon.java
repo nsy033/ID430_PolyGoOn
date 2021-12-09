@@ -1,26 +1,25 @@
 package PGO.cmd;
 
-import PGO.PGO;
-import PGO.PGOEventListener;
-import PGO.PGOPolygon;
-import PGO.PGOPolygonMgr;
-import PGO.sceanrio.PGODeformScenario;
-import java.awt.Point;
 import x.XApp;
 import x.XLoggableCmd;
+import java.awt.Point;
 
-public class PGOCmdToUpdateSelectedPolygons extends XLoggableCmd {
+import PGO.PGO;
+import PGO.PGOEventListener;
+import PGO.sceanrio.PGODeleteScenario;
+
+public class PGOCmdToDragPolygon extends XLoggableCmd {
     // field
     private Point mPt = null;
 
     // private constructor
-    private PGOCmdToUpdateSelectedPolygons(XApp app, Point pt) {
+    private PGOCmdToDragPolygon(XApp app, Point pt) {
         super(app);
         this.mPt = pt;
     }
 
     public static boolean execute(XApp app, Point pt) {
-        PGOCmdToUpdateSelectedPolygons cmd = new PGOCmdToUpdateSelectedPolygons(app, pt);
+        PGOCmdToDragPolygon cmd = new PGOCmdToDragPolygon(app, pt);
         return cmd.execute();
     }
 
@@ -28,16 +27,13 @@ public class PGOCmdToUpdateSelectedPolygons extends XLoggableCmd {
     protected boolean defineCmd() {
         PGO pgo = (PGO) this.mApp;
         pgo.getLogMgr().setPrintOn(true);
-        PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
-        Point prevPt = PGODeformScenario.getSingleton().getPrevPt();
-
-        for (PGOPolygon polygon : polygonMgr.getSelectedPolygons()) {
-            int ptIndexInFixedPts = polygonMgr.getFixedPts().indexOf(prevPt);
-            polygon.updateSelectedPt(this.mPt, prevPt);
-            polygon.updateBoundingBox(polygon.getPts());
-            polygonMgr.getFixedPts().set(ptIndexInFixedPts, this.mPt);
+        PGODeleteScenario scenario = PGODeleteScenario.getSingleton();
+        if (pgo.getPolygonMgr().getDraggedPolygon() != null) {
+            pgo.getPolygonMgr().getDraggedPolygon().translatePolygon(
+                    this.mPt.getX() - scenario.getLastLocation().getX(),
+                    this.mPt.getY() - scenario.getLastLocation().getY());
+            scenario.setLastLocation(this.mPt);
         }
-
         if (pgo.getEventListener().getMousePrevPt().distance(mPt.getX(),
                 mPt.getY()) > PGOEventListener.MIN_DISTANCE_FOR_LOGGING) {
             pgo.getEventListener().setMousePrevPt(mPt);
