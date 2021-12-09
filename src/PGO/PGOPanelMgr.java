@@ -2,6 +2,7 @@ package PGO;
 
 import java.awt.Color;
 import java.awt.dnd.DropTarget;
+import java.io.File;
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -41,7 +42,7 @@ public class PGOPanelMgr {
     public ImageIcon getImageIcon() {
         return this.mImageIcon;
     }
-    public void setImageLabel(ImageIcon icon) {
+    public void setImageIcon(ImageIcon icon) {
         this.mImageIcon = icon;
     }
     private String mFilePath = null;
@@ -52,6 +53,17 @@ public class PGOPanelMgr {
         this.mFilePath = filepath;
     }
     private String mFileName = null;
+    public void setFileName(String filename) {
+        this.mFileName = filename;
+    }
+
+    private boolean mImageLoaded = false;
+    public boolean isImageLoaded() {
+        return this.mImageLoaded;
+    }
+    public void setImageLoaded(boolean state) {
+        this.mImageLoaded = state;
+    }
     
     // constructor
     public PGOPanelMgr(PGO pgo) {
@@ -92,6 +104,14 @@ public class PGOPanelMgr {
         PGOPanelMgr panelMgr = pgo.getPanelMgr();
         PGOSliderMgr sliderMgr = pgo.getSliderMgr();
 
+        File file = new File(path);
+        if (file.exists()) {
+            this.mImageLoaded = true;
+        } else {
+            pgo.vibrate();
+            return;
+        }
+        
         Image image = new ImageIcon(path).getImage();
         pgo.getFrame().setIconImage(image);
 
@@ -113,11 +133,11 @@ public class PGOPanelMgr {
             scenario.setPrevPath(null);
             scenario.setPrevImage(null);
             pgo.vibrate();
-            this.mFileName = "image with invalid proprotion";
+            this.mFileName = "image with invalid proportion";
         } else {
             ImageIcon imageIcon = new ImageIcon(image.getScaledInstance(
                     width, height, Image.SCALE_DEFAULT));
-            panelMgr.setImageLabel(imageIcon);
+            panelMgr.setImageIcon(imageIcon);
 
             scenario.setPrevImage(new JLabel());
             scenario.getPrevImage().setIcon(imageIcon);
