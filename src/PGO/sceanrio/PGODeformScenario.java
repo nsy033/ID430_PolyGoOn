@@ -6,14 +6,20 @@ import PGO.PGOPolygonCalcMgr;
 import PGO.PGOPolygonMgr;
 import PGO.PGOScene;
 import PGO.cmd.PGOCmdToCheckAndUpdateSelectedPolygons;
+import PGO.cmd.PGOCmdToCheckAndUpdateSelectedPolygonsBeforeSeparate;
+import PGO.cmd.PGOCmdToCheckAndUpdateSeparatedPolygon;
+import PGO.cmd.PGOCmdToChooseVertex;
+import PGO.cmd.PGOCmdToDeselectSelectedPolygons;
+import PGO.cmd.PGOCmdToReadyToChooseVertex;
+import PGO.cmd.PGOCmdToResumeDeforming;
 import PGO.cmd.PGOCmdToSelectMorePolygons;
 import PGO.cmd.PGOCmdToSelectPolygons;
+import PGO.cmd.PGOCmdToSeparateVertex;
 import PGO.cmd.PGOCmdToUpdateSelectedPolygons;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -62,6 +68,26 @@ public class PGODeformScenario extends XScenario {
 
     public void setPrevPolygons(ArrayList<PGOPolygon> polygons) {
         this.mPrevPolygons = polygons;
+    }
+
+    private boolean mAnySelected = false;
+
+    public boolean getAnySelected() {
+        return this.mAnySelected;
+    }
+
+    public void setAnySelected(boolean state) {
+        this.mAnySelected = state;
+    }
+
+    private boolean mIsFarEnough = false;
+
+    public boolean getIsFarEnough() {
+        return this.mIsFarEnough;
+    }
+
+    public void setIsFarEnough(boolean state) {
+        this.mIsFarEnough = state;
     }
 
     // singleton pattern
@@ -228,57 +254,15 @@ public class PGODeformScenario extends XScenario {
         public void handleKeyDown(KeyEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
             int code = e.getKeyCode();
-            boolean anyIntersected = false;
-            PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
 
             switch (code) {
                 case KeyEvent.VK_ALT:
-                    ArrayList<PGOPolygon> polygons = (ArrayList<PGOPolygon>) polygonMgr.getSelectedPolygons().clone();
-                    polygons.addAll((ArrayList<PGOPolygon>) polygonMgr.getPolygons().clone());
-                    ArrayList<PGOPolygon> polygons2 = (ArrayList<PGOPolygon>) polygons.clone();
-                    for (PGOPolygon polygon : polygons) {
-                        polygons2.remove(polygon);
-                        if (PGOPolygonCalcMgr.isIntersected(polygon, polygons2)) {
-                            anyIntersected = true;
-                            polygons2.add(polygon);
-                            break;
-                        }
-                        polygons2.add(polygon);
-                    }
-                    if (anyIntersected || !PGOPolygonCalcMgr.areValidPolygons(
-                            polygonMgr.getSelectedPolygons())) {
-                        polygonMgr.getPolygons().addAll(
-                                (ArrayList<PGOPolygon>) PGODeformScenario.getSingleton().getPrevPolygons().clone());
-                        polygonMgr
-                                .setFixedPts((ArrayList<Point>) PGODeformScenario.getSingleton().getPrevPts().clone());
-
-                        pgo.vibrate();
-
-                        pgo.getPolygonMgr().getSelectedPolygons().clear();
-                        PGODeformScenario.getSingleton().setPrevPolygons(null);
-                        PGODeformScenario.getSingleton().setPrevPts(null);
+                    PGOCmdToCheckAndUpdateSelectedPolygonsBeforeSeparate.execute(pgo);
+                    if (pgo.getPolygonMgr().getSelectedPolygons().isEmpty()) {
                         XCmdToChangeScene.execute(pgo,
                                 PGODeformScenario.SeparateReadyScene.getSingleton(),
                                 this.mReturnScene);
-
                     } else {
-                        for (PGOPolygon polygon : polygonMgr.getSelectedPolygons()) {
-                            Color c = pgo.getColorCalcMgr().getBgColor(pgo, polygon);
-                            polygon.setColor(c);
-                        }
-                        if (polygonMgr.getSelectedPolygons().size() <= 1) {
-                            polygonMgr.getPolygons().addAll(
-                                    polygonMgr.getSelectedPolygons());
-                            polygonMgr.getSelectedPolygons().clear();
-
-                            PGODeformScenario.getSingleton().setPrevPolygons(null);
-                            PGODeformScenario.getSingleton().setPrevPts(null);
-
-                            XCmdToChangeScene.execute(pgo,
-                                    PGODeformScenario.SeparateReadyScene.getSingleton(),
-                                    this.mReturnScene);
-                        }
-                        PGODeformScenario.getSingleton().setPrevPolygons(null);
                         XCmdToChangeScene.execute(pgo,
                                 PGODeformScenario.ChooseVertexScene.getSingleton(),
                                 this.mReturnScene);
@@ -294,12 +278,8 @@ public class PGODeformScenario extends XScenario {
 
             switch (code) {
                 case KeyEvent.VK_SHIFT:
-                    pgo.getPolygonMgr().getPolygons().addAll(
-                            pgo.getPolygonMgr().getSelectedPolygons());
-                    pgo.getPolygonMgr().getSelectedPolygons().clear();
+                    PGOCmdToDeselectSelectedPolygons.execute(pgo);
                     PGODeformScenario.getSingleton().setPrevPolygons(null);
-                    PGODeformScenario.getSingleton().setPrevPts(null);
-                    PGODeformScenario.getSingleton().setPrevPt(null);
                     XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
                     break;
             }
@@ -353,30 +333,13 @@ public class PGODeformScenario extends XScenario {
         public void handleMousePress(MouseEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
             Point pt = PGOPolygonCalcMgr.findNearPt(e.getPoint(), pgo.getPolygonMgr().getFixedPts());
-            Rectangle boundingBox = new Rectangle(pt.x - 100, pt.y - 100, 200, 200);
-            ArrayList<PGOPolygon> newSelectedPolygons = new ArrayList<PGOPolygon>();
 
             if (pgo.getPolygonMgr().getFixedPts().contains(pt)) {
-                for (PGOPolygon polygon : pgo.getPolygonMgr().getPolygons()) {
-                    if (boundingBox.intersects(polygon.getBoundingBox())) {
-                        if (polygon.getPts().contains(pt)) {
-                            newSelectedPolygons.add(polygon);
-                        }
-                    }
-                }
-
-                if (newSelectedPolygons.size() > 1) {
-                    pgo.getPolygonMgr().getPolygons().removeAll(newSelectedPolygons);
-                    pgo.getPolygonMgr().getSelectedPolygons().addAll(newSelectedPolygons);
-                    newSelectedPolygons.clear();
-
-                    PGODeformScenario.getSingleton().setPrevPt(pt);
-
+                PGOCmdToReadyToChooseVertex.execute(pgo, pt);
+                if (PGODeformScenario.getSingleton().getPrevPt() != null) {
                     XCmdToChangeScene.execute(pgo,
                             PGODeformScenario.ChooseVertexScene.getSingleton(),
                             this.mReturnScene);
-                } else {
-
                 }
             }
         }
@@ -461,36 +424,15 @@ public class PGODeformScenario extends XScenario {
         @Override
         public void handleMouseDrag(Point pt) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            // Point pt = e.getPoint();
-            boolean anySelected = false;
 
-            if (pt.distance(PGODeformScenario.getSingleton().getPrevPt()) > 10) {
-                for (PGOPolygon polygon : pgo.getPolygonMgr().getSelectedPolygons()) {
-                    if (PGOPolygonCalcMgr.checkContent(pt, polygon)) {
-                        PGODeformScenario.getSingleton().setPrevPolygon(polygon.clonePolygon());
-                        PGODeformScenario.getSingleton()
-                                .setPrevPts((ArrayList<Point>) pgo.getPolygonMgr().getFixedPts().clone());
-                        pgo.getPolygonMgr().getPolygons().addAll(
-                                pgo.getPolygonMgr().getSelectedPolygons());
-                        pgo.getPolygonMgr().getSelectedPolygons().clear();
-
-                        pgo.getPolygonMgr().getPolygons().remove(polygon);
-                        pgo.getPolygonMgr().getSelectedPolygons().add(polygon);
-                        anySelected = true;
-
-                        break;
-                    }
-                }
-                if (anySelected) {
+            PGOCmdToChooseVertex.execute(pgo, pt);
+            if (PGODeformScenario.getSingleton().getIsFarEnough()) {
+                if (PGODeformScenario.getSingleton().getAnySelected()) {
                     XCmdToChangeScene.execute(pgo,
                             PGODeformScenario.SeparateScene.getSingleton(),
                             this.mReturnScene);
                 } else {
-                    PGODeformScenario.getSingleton().setPrevPt(null);
-                    PGODeformScenario.getSingleton().setPrevPts(null);
-                    pgo.getPolygonMgr().getPolygons().addAll(
-                            pgo.getPolygonMgr().getSelectedPolygons());
-                    pgo.getPolygonMgr().getSelectedPolygons().clear();
+                    PGOCmdToDeselectSelectedPolygons.execute(pgo);
                     XCmdToChangeScene.execute(pgo,
                             PGODeformScenario.SeparateReadyScene.getSingleton(),
                             this.mReturnScene);
@@ -517,11 +459,7 @@ public class PGODeformScenario extends XScenario {
                     XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
                     break;
                 case KeyEvent.VK_ALT:
-                    PGODeformScenario.getSingleton().setPrevPt(null);
-                    PGODeformScenario.getSingleton().setPrevPts(null);
-                    pgo.getPolygonMgr().getPolygons().addAll(
-                            pgo.getPolygonMgr().getSelectedPolygons());
-                    pgo.getPolygonMgr().getSelectedPolygons().clear();
+                    PGOCmdToDeselectSelectedPolygons.execute(pgo);
                     XCmdToChangeScene.execute(pgo,
                             PGODeformScenario.DeformReadyScene.getSingleton(),
                             this.mReturnScene);
@@ -580,49 +518,13 @@ public class PGODeformScenario extends XScenario {
         @Override
         public void handleMouseDrag(Point pt) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
-            // Point pt = e.getPoint();
-            Point prevPt = PGODeformScenario.getSingleton().getPrevPt();
-
-            for (PGOPolygon polygon : polygonMgr.getSelectedPolygons()) {
-                int ptIndexInFixedPts = polygonMgr.getFixedPts().indexOf(prevPt);
-                polygon.updateSelectedPt(pt, prevPt);
-                polygon.updateBoundingBox(polygon.getPts());
-                polygonMgr.getFixedPts().set(ptIndexInFixedPts, pt);
-            }
-            PGODeformScenario.getSingleton().setPrevPt(pt);
+            PGOCmdToSeparateVertex.execute(pgo, pt);
         }
 
         @Override
         public void handleMouseRelease(MouseEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            boolean anyIntersected = false;
-            PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
-            Point prevPt = PGODeformScenario.getSingleton().getPrevPt();
-            for (PGOPolygon polygon : polygonMgr.getSelectedPolygons()) {
-                if (PGOPolygonCalcMgr.isIntersected(polygon, polygonMgr.getPolygons())) {
-                    anyIntersected = true;
-                    break;
-                }
-            }
-            if (anyIntersected || !PGOPolygonCalcMgr.areValidPolygons(
-                    polygonMgr.getSelectedPolygons())) {
-                polygonMgr.getPolygons().add(PGODeformScenario.getSingleton().getPrevPolygon().clonePolygon());
-                polygonMgr.setFixedPts((ArrayList<Point>) PGODeformScenario.getSingleton().getPrevPts().clone());
-                pgo.vibrate();
-            } else {
-                for (PGOPolygon polygon : polygonMgr.getSelectedPolygons()) {
-                    Color c = pgo.getColorCalcMgr().getBgColor(pgo, polygon);
-                    polygon.setColor(c);
-                }
-                polygonMgr.getPolygons().addAll(
-                        polygonMgr.getSelectedPolygons());
-            }
-
-            polygonMgr.getSelectedPolygons().clear();
-            PGODeformScenario.getSingleton().setPrevPt(null);
-            PGODeformScenario.getSingleton().setPrevPts(null);
-            PGODeformScenario.getSingleton().setPrevPolygon(null);
+            PGOCmdToCheckAndUpdateSeparatedPolygon.execute(pgo);
 
             XCmdToChangeScene.execute(pgo,
                     PGODeformScenario.SeparateReadyScene.getSingleton(),
@@ -643,10 +545,7 @@ public class PGODeformScenario extends XScenario {
                     XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
                     break;
                 case KeyEvent.VK_ALT:
-                    PGODeformScenario.getSingleton().setPrevPolygons(new ArrayList<PGOPolygon>());
-                    PGODeformScenario.getSingleton().getPrevPolygons()
-                            .add(PGODeformScenario.getSingleton().getPrevPolygon());
-                    PGODeformScenario.getSingleton().setPrevPolygon(null);
+                    PGOCmdToResumeDeforming.execute(pgo);
                     XCmdToChangeScene.execute(pgo,
                             PGODeformScenario.DeformScene.getSingleton(),
                             this.mReturnScene);

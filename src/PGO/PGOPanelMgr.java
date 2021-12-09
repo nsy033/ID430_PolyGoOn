@@ -130,7 +130,6 @@ public class PGOPanelMgr {
         }
 
         Image image = new ImageIcon(path).getImage();
-        pgo.getFrame().setIconImage(image);
 
         int imgWidth = image.getWidth(null);
         int imgHeight = image.getHeight(null);

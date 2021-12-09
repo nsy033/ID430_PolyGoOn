@@ -12,14 +12,15 @@ import java.util.ArrayList;
 import x.XApp;
 import x.XLoggableCmd;
 
-public class PGOCmdToCheckAndUpdateSelectedPolygons extends XLoggableCmd {
+public class PGOCmdToCheckAndUpdateSelectedPolygonsBeforeSeparate extends XLoggableCmd {
     // private constructor
-    private PGOCmdToCheckAndUpdateSelectedPolygons(XApp app) {
+    private PGOCmdToCheckAndUpdateSelectedPolygonsBeforeSeparate(XApp app) {
         super(app);
     }
 
     public static boolean execute(XApp app) {
-        PGOCmdToCheckAndUpdateSelectedPolygons cmd = new PGOCmdToCheckAndUpdateSelectedPolygons(app);
+        PGOCmdToCheckAndUpdateSelectedPolygonsBeforeSeparate cmd = new PGOCmdToCheckAndUpdateSelectedPolygonsBeforeSeparate(
+                app);
         return cmd.execute();
     }
 
@@ -43,25 +44,32 @@ public class PGOCmdToCheckAndUpdateSelectedPolygons extends XLoggableCmd {
         }
         if (anyIntersected || !PGOPolygonCalcMgr.areValidPolygons(
                 polygonMgr.getSelectedPolygons())) {
-            polygonMgr.getPolygons()
-                    .addAll((ArrayList<PGOPolygon>) PGODeformScenario.getSingleton().getPrevPolygons().clone());
-            polygonMgr.setFixedPts((ArrayList<Point>) PGODeformScenario.getSingleton().getPrevPts().clone());
+            polygonMgr.getPolygons().addAll(
+                    (ArrayList<PGOPolygon>) PGODeformScenario.getSingleton().getPrevPolygons().clone());
+            polygonMgr
+                    .setFixedPts((ArrayList<Point>) PGODeformScenario.getSingleton().getPrevPts().clone());
 
             pgo.vibrate();
-        } else {
-            pgo.getPolygonMgr().getPolygons().addAll(
-                    polygonMgr.getSelectedPolygons());
 
-            for (PGOPolygon polygon : polygonMgr.getPolygons()) {
+            pgo.getPolygonMgr().getSelectedPolygons().clear();
+            PGODeformScenario.getSingleton().setPrevPolygons(null);
+            PGODeformScenario.getSingleton().setPrevPts(null);
+        } else {
+            for (PGOPolygon polygon : polygonMgr.getSelectedPolygons()) {
                 Color c = pgo.getColorCalcMgr().getBgColor(pgo, polygon);
                 polygon.setColor(c);
             }
-        }
+            if (polygonMgr.getSelectedPolygons().size() <= 1) {
+                polygonMgr.getPolygons().addAll(
+                        polygonMgr.getSelectedPolygons());
+                polygonMgr.getSelectedPolygons().clear();
 
-        pgo.getPolygonMgr().getSelectedPolygons().clear();
-        PGODeformScenario.getSingleton().setPrevPolygons(null);
-        PGODeformScenario.getSingleton().setPrevPts(null);
-        PGODeformScenario.getSingleton().setPrevPt(null);
+                PGODeformScenario.getSingleton().setPrevPolygons(null);
+                PGODeformScenario.getSingleton().setPrevPts(null);
+            } else {
+                PGODeformScenario.getSingleton().setPrevPolygons(null);
+            }
+        }
         return true;
     }
 

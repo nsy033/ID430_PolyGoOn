@@ -16,13 +16,13 @@ public class PGOCmdToAddThirdPt extends XLoggableCmd {
     Point mPt = null;
     ArrayList<PGOPolygon> polygons = null;
     PGOPolygon tempPolygon = null;
-    
+
     // constructor
     private PGOCmdToAddThirdPt(XApp app, Point pt) {
         super(app);
         this.mPt = pt;
     }
-    
+
     public static boolean execute(XApp app, Point pt) {
         PGOCmdToAddThirdPt cmd = new PGOCmdToAddThirdPt(app, pt);
         return cmd.execute();
@@ -32,7 +32,6 @@ public class PGOCmdToAddThirdPt extends XLoggableCmd {
     protected boolean defineCmd() {
         PGO pgo = (PGO) this.mApp;
         PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
-        PGOPolygonCalcMgr polygonCalcMgr = pgo.getPolygonCalcMgr();
         polygons = polygonMgr.getPolygons();
 
         ArrayList<Point> tempPts = polygonMgr.getCurPolygon().getPts();
@@ -45,19 +44,19 @@ public class PGOCmdToAddThirdPt extends XLoggableCmd {
         boolean isContained = false;
         boolean isIntersected = false;
         boolean isOverlapped = false;
-        for (PGOPolygon polygon: polygons) {
-            if (polygonCalcMgr.checkContent(this.mPt, polygon)) {
+        for (PGOPolygon polygon : polygons) {
+            if (PGOPolygonCalcMgr.checkContent(this.mPt, polygon)) {
                 isContained = true;
                 break;
             }
         }
-        if (polygonCalcMgr.isIntersected(tempPolygon, polygons)) {
+        if (PGOPolygonCalcMgr.isIntersected(tempPolygon, polygons)) {
             isIntersected = true;
         }
-        if (polygonCalcMgr.isOverlapped(tempPolygon, polygons)) {
+        if (PGOPolygonCalcMgr.isOverlapped(tempPolygon, polygons)) {
             isOverlapped = true;
         }
-        
+
         if (!isContained && !isIntersected && !isOverlapped) {
             polygonMgr.getCurPolygon().addPt(this.mPt);
         }
@@ -71,8 +70,8 @@ public class PGOCmdToAddThirdPt extends XLoggableCmd {
         sb.append(this.mPt).append("\t");
         sb.append(this.tempPolygon).append("\t");
         sb.append(this.polygons);
-        
+
         return sb.toString();
     }
-    
+
 }
