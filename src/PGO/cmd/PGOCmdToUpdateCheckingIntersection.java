@@ -1,6 +1,7 @@
 package PGO.cmd;
 
 import PGO.PGO;
+import PGO.PGOEventListener;
 import PGO.PGOPolygon;
 import PGO.PGOPolygonCalcMgr;
 import PGO.PGOPolygonMgr;
@@ -16,13 +17,13 @@ public class PGOCmdToUpdateCheckingIntersection extends XLoggableCmd {
     Point mPt = null;
     ArrayList<PGOPolygon> polygons = null;
     PGOPolygon tempPolygon = null;
-    
+
     // constructor
     private PGOCmdToUpdateCheckingIntersection(XApp app, Point pt) {
         super(app);
         this.mPt = pt;
     }
-    
+
     public static boolean execute(XApp app, Point pt) {
         PGOCmdToUpdateCheckingIntersection cmd = new PGOCmdToUpdateCheckingIntersection(app, pt);
         return cmd.execute();
@@ -31,7 +32,8 @@ public class PGOCmdToUpdateCheckingIntersection extends XLoggableCmd {
     @Override
     protected boolean defineCmd() {
         PGO pgo = (PGO) this.mApp;
-        
+        pgo.getLogMgr().setPrintOn(true);
+
         PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
         PGOPolygonCalcMgr polygonCalcMgr = pgo.getPolygonCalcMgr();
         ArrayList<PGOPolygon> polygons = polygonMgr.getPolygons();
@@ -43,7 +45,7 @@ public class PGOCmdToUpdateCheckingIntersection extends XLoggableCmd {
         boolean isIntersected = false;
         boolean isOverlapped = false;
 
-        for (PGOPolygon polygon: polygons) {
+        for (PGOPolygon polygon : polygons) {
             if (polygonCalcMgr.checkContent(this.mPt, polygon)) {
                 isContained = true;
                 break;
@@ -57,10 +59,17 @@ public class PGOCmdToUpdateCheckingIntersection extends XLoggableCmd {
         }
 
         if (!isContained && !isIntersected && !isOverlapped) {
-            this.mPt = polygonCalcMgr.findNearPt(this.mPt);
+            this.mPt = polygonCalcMgr.findNearPt(this.mPt, pgo.getPolygonMgr().getFixedPts());
             polygonMgr.getCurPolygon().updatePolygon(this.mPt);
         }
-        
+
+        if (pgo.getEventListener().getMousePrevPt().distance(mPt.getX(),
+                mPt.getY()) > PGOEventListener.MIN_DISTANCE_FOR_LOGGING) {
+            pgo.getEventListener().setMousePrevPt(mPt);
+        } else {
+            pgo.getLogMgr().setPrintOn(false);
+        }
+
         return true;
     }
 
@@ -71,8 +80,8 @@ public class PGOCmdToUpdateCheckingIntersection extends XLoggableCmd {
         sb.append(this.mPt).append("\t");
         sb.append(this.tempPolygon);
         sb.append(this.polygons);
-        
+
         return sb.toString();
     }
-    
+
 }

@@ -25,62 +25,83 @@ public class PGO extends XApp {
 
     // fields
     private JFrame mFrame = null;
+
     public JFrame getFrame() {
         return this.mFrame;
     }
+
     private int mDeltaFrameheight = 0;
+
     public int getDeltaFrameHeight() {
         return this.mDeltaFrameheight;
     }
+
     public void setDeltaFrameHeight(int delta) {
         this.mDeltaFrameheight = delta;
     }
 
     private Ellipse2D mDeleteArea = null;
+
     public Ellipse2D getDeleteArea() {
         return this.mDeleteArea;
     }
+
     public void setDeleteArea(Ellipse2D area) {
         this.mDeleteArea = area;
     }
 
     private PGOCanvas2D mCanvas2D = null;
+
     public PGOCanvas2D getCanvas2D() {
         return this.mCanvas2D;
     }
 
     private PGOEventListener mEventListener = null;
+
     public PGOEventListener getEventListener() {
         return this.mEventListener;
     }
+
     private PGODragListener mDragListener = null;
+
     public PGODragListener getDragListener() {
         return this.mDragListener;
     }
 
     private PGOPolygonMgr mPolygonMgr = null;
+
     public PGOPolygonMgr getPolygonMgr() {
         return this.mPolygonMgr;
     }
+
     private XScenarioMgr mScenarioMgr = null;
+
     @Override
     public XScenarioMgr getScenarioMgr() {
         return this.mScenarioMgr;
     }
+
     private XLogMgr mLogMgr = null;
+
     @Override
     public XLogMgr getLogMgr() {
         return this.mLogMgr;
     }
+
     private PGOPolygonCalcMgr mPolygonCalcMgr = null;
+
     public PGOPolygonCalcMgr getPolygonCalcMgr() {
         return this.mPolygonCalcMgr;
     }
+
     private PGOColorCalcMgr mColorCalcMgr = null;
+
     public PGOColorCalcMgr getColorCalcMgr() {
         return this.mColorCalcMgr;
     }
+
     private PGOPanelMgr mPanelMgr = null;
+
     public PGOPanelMgr getPanelMgr() {
         return this.mPanelMgr;
     }
@@ -110,7 +131,7 @@ public class PGO extends XApp {
         BorderLayout bLayout = new BorderLayout();
         this.mCanvas2D.setOpaque(false);
         this.mCanvas2D.setBorder(
-            BorderFactory.createEmptyBorder(PGO.EMPTY_BORDER, 0, 0, 0));
+                BorderFactory.createEmptyBorder(PGO.EMPTY_BORDER, 0, 0, 0));
         this.mFrame.setLayout(bLayout);
         this.mFrame.add(this.mCanvas2D, BorderLayout.CENTER);
 
@@ -136,13 +157,13 @@ public class PGO extends XApp {
             try {
                 Thread.sleep(15);
                 this.mFrame.setLocation(
-                    originalX, originalY + VIBRATION_VELOCITY);
+                        originalX, originalY + VIBRATION_VELOCITY);
                 Thread.sleep(5);
                 this.mFrame.setLocation(
-                    originalX, originalY - VIBRATION_VELOCITY);
+                        originalX, originalY - VIBRATION_VELOCITY);
                 Thread.sleep(5);
                 this.mFrame.setLocation(
-                    originalX + VIBRATION_VELOCITY, originalY);
+                        originalX + VIBRATION_VELOCITY, originalY);
                 Thread.sleep(5);
                 this.mFrame.setLocation(originalX, originalY);
             } catch (InterruptedException ex) {

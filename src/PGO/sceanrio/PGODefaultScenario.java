@@ -1,16 +1,15 @@
 package PGO.sceanrio;
 
 import PGO.PGO;
-import PGO.PGOCanvas2D;
-import PGO.PGOPanelMgr;
 import PGO.PGOScene;
 import PGO.cmd.PGOCmdToAddFirstPt;
+import PGO.cmd.PGOCmdToAskBeforeSave;
+import PGO.cmd.PGOCmdToSetImageVisibility;
 import PGO.cmd.PGOCmdToStartHSBControl;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import javax.swing.JLabel;
 import javax.swing.event.ChangeEvent;
 import x.XApp;
 import x.XCmdToChangeScene;
@@ -61,6 +60,7 @@ public class PGODefaultScenario extends XScenario {
             super(scenario);
         }
 
+        // field
         private boolean mCtrlPressed = false;
 
         @Override
@@ -69,12 +69,12 @@ public class PGODefaultScenario extends XScenario {
             PGOCmdToAddFirstPt.execute(pgo, e.getPoint());
             if (pgo.getPolygonMgr().getCurPolygon() != null) {
                 XCmdToChangeScene.execute(pgo,
-                    PGOCreatePolygonScenario.SetFirstPtScene.getSingleton(),
-                    this);
+                        PGOCreatePolygonScenario.SetFirstPtScene.getSingleton(),
+                        this);
             } else {
                 XCmdToChangeScene.execute(pgo,
-                    PGODeleteScenario.DeleteReadyScene.getSingleton(),
-                    this);
+                        PGODeleteScenario.DeleteReadyScene.getSingleton(),
+                        this);
             }
         }
 
@@ -89,23 +89,22 @@ public class PGODefaultScenario extends XScenario {
         @Override
         public void handleKeyDown(KeyEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            PGOPanelMgr panelMgr = pgo.getPanelMgr();
             int code = e.getKeyCode();
 
             switch (code) {
                 case KeyEvent.VK_SHIFT:
                     XCmdToChangeScene.execute(pgo,
-                        PGODeformScenario.DeformReadyScene.getSingleton(),
-                        this);
+                            PGODeformScenario.DeformReadyScene.getSingleton(),
+                            this);
                     break;
                 case KeyEvent.VK_C:
                     PGOCmdToStartHSBControl.execute(pgo);
                     XCmdToChangeScene.execute(pgo,
-                        PGOColorScenario.ColorReadyScene.getSingleton(),
-                        this);
+                            PGOColorScenario.ColorReadyScene.getSingleton(),
+                            this);
                     break;
                 case KeyEvent.VK_V:
-                    panelMgr.getImagePane().setVisible(false);
+                    PGOCmdToSetImageVisibility.execute(pgo, false);
                     XCmdToChangeScene.execute(pgo,
                             PGODefaultScenario.ImageHideScene.getSingleton(),
                             this);
@@ -115,19 +114,12 @@ public class PGODefaultScenario extends XScenario {
                     break;
                 case KeyEvent.VK_S:
                     if (this.mCtrlPressed) {
-                        panelMgr.getImagePane().setVisible(false);
-
-                        panelMgr.setTextLabel(new JLabel("Press Enter to save your art"));
-                        panelMgr.getTextLabel().setFont(PGOCanvas2D.FONT_INFO);
-                        panelMgr.getTextLabel().setVerticalAlignment(JLabel.CENTER);
-                        panelMgr.getTextLabel().setHorizontalAlignment(JLabel.CENTER);
-
-                        pgo.getCanvas2D().setOpaque(true);
-                        pgo.getCanvas2D().add(panelMgr.getTextLabel());
+                        PGOCmdToSetImageVisibility.execute(pgo, false);
+                        PGOCmdToAskBeforeSave.execute(pgo);
 
                         XCmdToChangeScene.execute(pgo,
-                            PGOSaveScenario.SaveReadyScene.getSingleton(),
-                            null);
+                                PGOSaveScenario.SaveReadyScene.getSingleton(),
+                                null);
                     }
                     break;
             }
@@ -211,7 +203,7 @@ public class PGODefaultScenario extends XScenario {
 
             switch (code) {
                 case KeyEvent.VK_V:
-                    pgo.getPanelMgr().getImagePane().setVisible(true);
+                    PGOCmdToSetImageVisibility.execute(pgo, true);
                     XCmdToChangeScene.execute(pgo, this.mReturnScene, null);
                     break;
             }

@@ -3,17 +3,17 @@ package PGO.cmd;
 import x.XApp;
 import x.XLoggableCmd;
 
-public class PGOCmdToDoSth extends XLoggableCmd {
+public class PGOCmdToSelectDeletePolygon extends XLoggableCmd {
     // fields
     // ...
 
     // private constructor
-    private PGOCmdToDoSth(XApp app) {
+    private PGOCmdToSelectDeletePolygon(XApp app) {
         super(app);
     }
 
     public static boolean execute(XApp app) {
-        PGOCmdToDoSth cmd = new PGOCmdToDoSth(app);
+        PGOCmdToSelectDeletePolygon cmd = new PGOCmdToSelectDeletePolygon(app);
         return cmd.execute();
     }
 
