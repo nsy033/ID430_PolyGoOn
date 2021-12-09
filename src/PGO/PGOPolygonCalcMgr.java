@@ -12,12 +12,8 @@ public class PGOPolygonCalcMgr {
     private static final double MIN_RATIO_LENGTH = 0.2;
     private static final double MAX_SNAP_DISTANCE = 10.0;
 
-    // field
-    private PGO mPGO = null;
-
     // constructor
-    public PGOPolygonCalcMgr(PGO pgo) {
-        this.mPGO = pgo;
+    public PGOPolygonCalcMgr() {
     }
 
     // methods

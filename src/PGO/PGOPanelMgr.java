@@ -16,55 +16,73 @@ public class PGOPanelMgr {
     // fields
     private PGO pgo = null;
     private JLabel mTextLabel = null;
+
     public JLabel getTextLabel() {
         return this.mTextLabel;
     }
+
     public void setTextLabel(JLabel label) {
         this.mTextLabel = label;
     }
 
     private JPanel mTranslucentPane = null;
+
     public JPanel getTranslucentPane() {
         return this.mTranslucentPane;
     }
+
     private JPanel mImagePane = null;
+
     public JPanel getImagePane() {
         return this.mImagePane;
     }
+
     private JLabel mImageLabel = null;
+
     public JLabel getImageLabel() {
         return this.mImageLabel;
     }
+
     public void setImageLabel(JLabel image) {
         this.mImageLabel = image;
     }
+
     private ImageIcon mImageIcon = null;
+
     public ImageIcon getImageIcon() {
         return this.mImageIcon;
     }
+
     public void setImageIcon(ImageIcon icon) {
         this.mImageIcon = icon;
     }
+
     private String mFilePath = null;
+
     public String getFilePath() {
         return this.mFilePath;
     }
+
     public void setFilePath(String filepath) {
         this.mFilePath = filepath;
     }
+
     private String mFileName = null;
+
     public void setFileName(String filename) {
         this.mFileName = filename;
     }
 
     private boolean mImageLoaded = false;
+
     public boolean isImageLoaded() {
         return this.mImageLoaded;
     }
+
     public void setImageLoaded(boolean state) {
         this.mImageLoaded = state;
     }
-    
+
     // constructor
     public PGOPanelMgr(PGO pgo) {
         // create components
@@ -76,22 +94,21 @@ public class PGOPanelMgr {
 
         // connect event listeners
         DropTarget dropTarget = new DropTarget(this.mImagePane,
-            pgo.getDragListener());
+                pgo.getDragListener());
 
         // build and show visible components
         this.mTranslucentPane.setBackground(new Color(255, 255, 255, 128));
         this.mTranslucentPane.setVisible(false);
         this.mTranslucentPane.setBorder(BorderFactory.createEmptyBorder(
-            PGO.EMPTY_BORDER, 0, 0, 0));
+                PGO.EMPTY_BORDER, 0, 0, 0));
         this.mTextLabel.setFont(PGOCanvas2D.FONT_INFO);
-        this.mTextLabel.setBackground(new Color(0, 0, 0, 30));
         this.mTextLabel.setVerticalAlignment(JLabel.CENTER);
         this.mTextLabel.setHorizontalAlignment(JLabel.CENTER);
         this.mTextLabel.setBorder(BorderFactory.createEmptyBorder(
-            PGO.TEXT_LABEL_HEIGHT, 0, 0, 0));
+                PGO.TEXT_LABEL_HEIGHT, 0, 0, 0));
         this.mImagePane.add(this.mTextLabel, BorderLayout.CENTER);
         this.mImagePane.setBorder(BorderFactory.createEmptyBorder(
-            PGO.EMPTY_BORDER, 0, 0, 0));
+                PGO.EMPTY_BORDER, 0, 0, 0));
 
         // add all panels to PGOFrame
         JFrame pgoFrame = pgo.getFrame();
@@ -111,7 +128,7 @@ public class PGOPanelMgr {
             pgo.vibrate();
             return;
         }
-        
+
         Image image = new ImageIcon(path).getImage();
         pgo.getFrame().setIconImage(image);
 

@@ -122,7 +122,7 @@ public class PGO extends XApp {
         this.mEventListener = new PGOEventListener(this);
         this.mDragListener = new PGODragListener(this);
         this.mPolygonMgr = new PGOPolygonMgr();
-        this.mPolygonCalcMgr = new PGOPolygonCalcMgr(this);
+        this.mPolygonCalcMgr = new PGOPolygonCalcMgr();
         this.mColorCalcMgr = new PGOColorCalcMgr(this);
         this.mScenarioMgr = new PGOScenarioMgr(this);
         this.mLogMgr = new XLogMgr();
