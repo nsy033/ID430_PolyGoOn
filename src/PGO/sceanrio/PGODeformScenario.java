@@ -2,8 +2,14 @@ package PGO.sceanrio;
 
 import PGO.PGO;
 import PGO.PGOPolygon;
+import PGO.PGOPolygonCalcMgr;
 import PGO.PGOPolygonMgr;
 import PGO.PGOScene;
+import PGO.cmd.PGOCmdToCheckAndUpdateSelectedPolygons;
+import PGO.cmd.PGOCmdToSelectMorePolygons;
+import PGO.cmd.PGOCmdToSelectPolygons;
+import PGO.cmd.PGOCmdToUpdateSelectedPolygons;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -108,29 +114,10 @@ public class PGODeformScenario extends XScenario {
         @Override
         public void handleMousePress(MouseEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            Point pt = pgo.getPolygonCalcMgr().findNearPt(e.getPoint(), pgo.getPolygonMgr().getFixedPts());
-            Rectangle boundingBox = new Rectangle(pt.x - 100, pt.y - 100, 200, 200);
-            ArrayList<PGOPolygon> newSelectedPolygons = new ArrayList<PGOPolygon>();
-            PGODeformScenario.getSingleton().setPrevPolygons(new ArrayList<PGOPolygon>());
-            PGODeformScenario.getSingleton().setPrevPts((ArrayList<Point>) pgo.getPolygonMgr().getFixedPts().clone());
+            Point pt = PGOPolygonCalcMgr.findNearPt(e.getPoint(), pgo.getPolygonMgr().getFixedPts());
 
             if (pgo.getPolygonMgr().getFixedPts().contains(pt)) {
-                for (PGOPolygon polygon : pgo.getPolygonMgr().getPolygons()) {
-                    if (boundingBox.intersects(polygon.getBoundingBox())) {
-                        PGOPolygon tmpPolygon = polygon.clonePolygon();
-                        if (polygon.getPts().contains(pt)) {
-                            newSelectedPolygons.add(polygon);
-                            PGODeformScenario.getSingleton().getPrevPolygons().add(tmpPolygon);
-                        }
-                    }
-                }
-                PGODeformScenario.getSingleton().setPrevPt(pt);
-                // pgo.getPolygonMgr().setSelectedPt(
-                // pgo.findNearPt(pt, pgo.getPolygonMgr().getFixedPts()));
-
-                pgo.getPolygonMgr().getPolygons().removeAll(newSelectedPolygons);
-                pgo.getPolygonMgr().getSelectedPolygons().addAll(newSelectedPolygons);
-                newSelectedPolygons.clear();
+                PGOCmdToSelectPolygons.execute(pgo, pt);
 
                 XCmdToChangeScene.execute(pgo,
                         PGODeformScenario.DeformScene.getSingleton(),
@@ -223,82 +210,15 @@ public class PGODeformScenario extends XScenario {
         @Override
         public void handleMouseDrag(Point pt) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
-            // Point pt = e.getPoint();
-            Point prevPt = PGODeformScenario.getSingleton().getPrevPt();
-
-            for (PGOPolygon polygon : polygonMgr.getSelectedPolygons()) {
-                int ptIndexInFixedPts = polygonMgr.getFixedPts().indexOf(prevPt);
-                polygon.updateSelectedPt(pt, prevPt);
-                polygon.updateBoundingBox(polygon.getPts());
-                polygonMgr.getFixedPts().set(ptIndexInFixedPts, pt);
-            }
-
-            Point nearPt = pgo.getPolygonCalcMgr().findNearPt(pt, pgo.getPolygonMgr().getFixedPts());
-            Rectangle boundingBox = new Rectangle(nearPt.x - 100, nearPt.y - 100, 200, 200);
-            ArrayList<PGOPolygon> newSelectedPolygons = new ArrayList<PGOPolygon>();
-            if (pgo.getPolygonMgr().getFixedPts().contains(nearPt)) {
-                for (PGOPolygon polygon : pgo.getPolygonMgr().getPolygons()) {
-                    if (boundingBox.intersects(polygon.getBoundingBox())) {
-                        PGOPolygon tmpPolygon = polygon.clonePolygon();
-                        if (polygon.getPts().contains(nearPt)) {
-                            newSelectedPolygons.add(polygon);
-                            PGODeformScenario.getSingleton().getPrevPolygons().add(tmpPolygon);
-
-                            int ptIndexInFixedPts = polygonMgr.getFixedPts().indexOf(nearPt);
-                            polygon.updateSelectedPt(pt, nearPt);
-                            polygon.updateBoundingBox(polygon.getPts());
-                            polygonMgr.getFixedPts().set(ptIndexInFixedPts, pt);
-                        }
-                    }
-                }
-                pgo.getPolygonMgr().getPolygons().removeAll(newSelectedPolygons);
-                pgo.getPolygonMgr().getSelectedPolygons().addAll(newSelectedPolygons);
-                newSelectedPolygons.clear();
-            }
-
-            // pgo.getPolygonMgr().setSelectedPt(pt);
-            PGODeformScenario.getSingleton().setPrevPt(pt);
+            PGOCmdToUpdateSelectedPolygons.execute(pgo, pt);
+            PGOCmdToSelectMorePolygons.execute(pgo, pt);
         }
 
         @Override
         public void handleMouseRelease(MouseEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            boolean anyIntersected = false;
-            PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
-            ArrayList<PGOPolygon> polygons = (ArrayList<PGOPolygon>) polygonMgr.getSelectedPolygons().clone();
-            polygons.addAll((ArrayList<PGOPolygon>) polygonMgr.getPolygons().clone());
-            ArrayList<PGOPolygon> polygons2 = (ArrayList<PGOPolygon>) polygons.clone();
-            for (PGOPolygon polygon : polygons) {
-                polygons2.remove(polygon);
-                if (pgo.getPolygonCalcMgr().isIntersected(polygon, polygons2)) {
-                    anyIntersected = true;
-                    polygons2.add(polygon);
-                    break;
-                }
-                polygons2.add(polygon);
-            }
-            if (anyIntersected || !pgo.getPolygonCalcMgr().areValidPolygons(
-                    polygonMgr.getSelectedPolygons())) {
-                polygonMgr.getPolygons()
-                        .addAll((ArrayList<PGOPolygon>) PGODeformScenario.getSingleton().getPrevPolygons().clone());
-                polygonMgr.setFixedPts((ArrayList<Point>) PGODeformScenario.getSingleton().getPrevPts().clone());
+            PGOCmdToCheckAndUpdateSelectedPolygons.execute(pgo);
 
-                pgo.vibrate();
-            } else {
-                pgo.getPolygonMgr().getPolygons().addAll(
-                        polygonMgr.getSelectedPolygons());
-
-                for (PGOPolygon polygon : polygonMgr.getPolygons()) {
-                    Color c = pgo.getColorCalcMgr().getBgColor(pgo, polygon);
-                    polygon.setColor(c);
-                }
-            }
-
-            pgo.getPolygonMgr().getSelectedPolygons().clear();
-            PGODeformScenario.getSingleton().setPrevPolygons(null);
-            PGODeformScenario.getSingleton().setPrevPts(null);
-            PGODeformScenario.getSingleton().setPrevPt(null);
             XCmdToChangeScene.execute(pgo,
                     PGODeformScenario.DeformReadyScene.getSingleton(),
                     this.mReturnScene);
@@ -318,14 +238,14 @@ public class PGODeformScenario extends XScenario {
                     ArrayList<PGOPolygon> polygons2 = (ArrayList<PGOPolygon>) polygons.clone();
                     for (PGOPolygon polygon : polygons) {
                         polygons2.remove(polygon);
-                        if (pgo.getPolygonCalcMgr().isIntersected(polygon, polygons2)) {
+                        if (PGOPolygonCalcMgr.isIntersected(polygon, polygons2)) {
                             anyIntersected = true;
                             polygons2.add(polygon);
                             break;
                         }
                         polygons2.add(polygon);
                     }
-                    if (anyIntersected || !pgo.getPolygonCalcMgr().areValidPolygons(
+                    if (anyIntersected || !PGOPolygonCalcMgr.areValidPolygons(
                             polygonMgr.getSelectedPolygons())) {
                         polygonMgr.getPolygons().addAll(
                                 (ArrayList<PGOPolygon>) PGODeformScenario.getSingleton().getPrevPolygons().clone());
@@ -432,7 +352,7 @@ public class PGODeformScenario extends XScenario {
         @Override
         public void handleMousePress(MouseEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            Point pt = pgo.getPolygonCalcMgr().findNearPt(e.getPoint(), pgo.getPolygonMgr().getFixedPts());
+            Point pt = PGOPolygonCalcMgr.findNearPt(e.getPoint(), pgo.getPolygonMgr().getFixedPts());
             Rectangle boundingBox = new Rectangle(pt.x - 100, pt.y - 100, 200, 200);
             ArrayList<PGOPolygon> newSelectedPolygons = new ArrayList<PGOPolygon>();
 
@@ -546,7 +466,7 @@ public class PGODeformScenario extends XScenario {
 
             if (pt.distance(PGODeformScenario.getSingleton().getPrevPt()) > 10) {
                 for (PGOPolygon polygon : pgo.getPolygonMgr().getSelectedPolygons()) {
-                    if (pgo.getPolygonCalcMgr().checkContent(pt, polygon)) {
+                    if (PGOPolygonCalcMgr.checkContent(pt, polygon)) {
                         PGODeformScenario.getSingleton().setPrevPolygon(polygon.clonePolygon());
                         PGODeformScenario.getSingleton()
                                 .setPrevPts((ArrayList<Point>) pgo.getPolygonMgr().getFixedPts().clone());
@@ -680,12 +600,12 @@ public class PGODeformScenario extends XScenario {
             PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
             Point prevPt = PGODeformScenario.getSingleton().getPrevPt();
             for (PGOPolygon polygon : polygonMgr.getSelectedPolygons()) {
-                if (pgo.getPolygonCalcMgr().isIntersected(polygon, polygonMgr.getPolygons())) {
+                if (PGOPolygonCalcMgr.isIntersected(polygon, polygonMgr.getPolygons())) {
                     anyIntersected = true;
                     break;
                 }
             }
-            if (anyIntersected || !pgo.getPolygonCalcMgr().areValidPolygons(
+            if (anyIntersected || !PGOPolygonCalcMgr.areValidPolygons(
                     polygonMgr.getSelectedPolygons())) {
                 polygonMgr.getPolygons().add(PGODeformScenario.getSingleton().getPrevPolygon().clonePolygon());
                 polygonMgr.setFixedPts((ArrayList<Point>) PGODeformScenario.getSingleton().getPrevPts().clone());

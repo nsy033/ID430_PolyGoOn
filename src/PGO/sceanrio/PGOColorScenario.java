@@ -13,7 +13,6 @@ import javax.swing.event.ChangeEvent;
 import x.XApp;
 import x.XCmdToChangeScene;
 import x.XScenario;
-import x.XScene;
 
 public class PGOColorScenario extends XScenario {
     // singleton pattern
@@ -69,28 +68,27 @@ public class PGOColorScenario extends XScenario {
         @Override
         public void handleMousePress(MouseEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            XScene nextScene = null;
-            
+
             if (e.getSource() == pgo.getCanvas2D()) {
                 return;
             }
-            
+
             JSlider selectedSlider = (JSlider) e.getSource();
             switch (selectedSlider.getName()) {
-                case "0" :
-                    XCmdToChangeScene.execute(pgo, 
-                        PGOColorScenario.HueChangeScene.getSingleton(),
-                        this.mReturnScene);
+                case "0":
+                    XCmdToChangeScene.execute(pgo,
+                            PGOColorScenario.HueChangeScene.getSingleton(),
+                            this.mReturnScene);
                     break;
-                case "1" :
-                    XCmdToChangeScene.execute(pgo, 
-                        PGOColorScenario.SatChangeScene.getSingleton(),
-                        this.mReturnScene);
+                case "1":
+                    XCmdToChangeScene.execute(pgo,
+                            PGOColorScenario.SatChangeScene.getSingleton(),
+                            this.mReturnScene);
                     break;
-                case "2" :
-                    XCmdToChangeScene.execute(pgo, 
-                        PGOColorScenario.BriChangeScene.getSingleton(),
-                        this.mReturnScene);
+                case "2":
+                    XCmdToChangeScene.execute(pgo,
+                            PGOColorScenario.BriChangeScene.getSingleton(),
+                            this.mReturnScene);
                     break;
             }
         }
@@ -259,8 +257,8 @@ public class PGOColorScenario extends XScenario {
         public void handleMouseRelease(MouseEvent e) {
             PGO pgo = (PGO) this.mScenario.getApp();
             XCmdToChangeScene.execute(pgo,
-                PGOColorScenario.ColorReadyScene.getSingleton(),
-                this.mReturnScene);
+                    PGOColorScenario.ColorReadyScene.getSingleton(),
+                    this.mReturnScene);
         }
 
         @Override

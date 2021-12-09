@@ -22,21 +22,22 @@ public class PGOCanvas2D extends JPanel {
             BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
     private static final double MAG_RATIO = 1.5;
     public static final Font FONT_INFO = new Font("Monospaced", Font.PLAIN, 24);
-    private static final int INFO_TOP_ALIGNMENT_X = 20;
-    private static final int INFO_TOP_ALIGNMENT_Y = 30;
     public static final float STROKE_MIN_WIDTH = 1f;
 
     // fields
     private PGO mPGO = null;
     private Color mCurColorForPolygon = null;
+
     public Color getCurColorForPolygon() {
         return this.mCurColorForPolygon;
     }
+
     public Color setCurColorForPolygon(Color c) {
         return this.mCurColorForPolygon = c;
     }
 
     private Stroke mCurStrokeForPolygon = null;
+
     public Stroke getCurStrokeForPolygon() {
         return this.mCurStrokeForPolygon;
     }
@@ -46,9 +47,9 @@ public class PGOCanvas2D extends JPanel {
     public void setDeleteAreaPaint(Point2D pt, int radius) {
         float[] dist = { 0.0f, 0.5f, 1.0f };
         Color[] colors = { new Color(0, 0, 0, 128),
-            new Color(0, 0, 0, 0), new Color(0, 0, 0, 0) };
+                new Color(0, 0, 0, 0), new Color(0, 0, 0, 0) };
         this.mDeleteAreaPaint = new RadialGradientPaint(pt, (float) radius,
-            dist, colors, MultipleGradientPaint.CycleMethod.NO_CYCLE);
+                dist, colors, MultipleGradientPaint.CycleMethod.NO_CYCLE);
     }
 
     // constructor
@@ -83,8 +84,7 @@ public class PGOCanvas2D extends JPanel {
     }
 
     private void drawSelectedPolygons(Graphics2D gfx2) {
-        ArrayList<PGOPolygon> polygons =
-            this.mPGO.getPolygonMgr().getSelectedPolygons();
+        ArrayList<PGOPolygon> polygons = this.mPGO.getPolygonMgr().getSelectedPolygons();
         for (PGOPolygon polygon : polygons) {
             this.drawPolygon(gfx2, polygon,
                     polygon.getColor(),
@@ -94,14 +94,13 @@ public class PGOCanvas2D extends JPanel {
     }
 
     private void drawDraggedPolygon(Graphics2D gfx2) {
-        PGOPolygon draggedPolygon =
-            this.mPGO.getPolygonMgr().getDraggedPolygon();
+        PGOPolygon draggedPolygon = this.mPGO.getPolygonMgr().getDraggedPolygon();
         if (draggedPolygon != null) {
             ArrayList<Point> pts = draggedPolygon.getPts();
             int nPts = 3;
             int[] xPts = new int[nPts];
             int[] yPts = new int[nPts];
-            Point gravity = this.mPGO.getPolygonCalcMgr().calcGravityPt(pts);
+            Point gravity = PGOPolygonCalcMgr.calcGravityPt(pts);
             for (int i = 0; i < pts.size(); i++) {
                 Point pt = pts.get(i);
                 xPts[i] = (int) (gravity.x + (pt.x - gravity.x) * MAG_RATIO);
@@ -174,7 +173,7 @@ public class PGOCanvas2D extends JPanel {
         double d = (double) PGOCanvas2D.STROKE_MIN_WIDTH * 10.0;
         for (Point pt : pts) {
             Ellipse2D.Double e = new Ellipse2D.Double(pt.x - (d / 2.0),
-                pt.y - (d / 2.0), d, d);
+                    pt.y - (d / 2.0), d, d);
             g2.fill(e);
         }
     }
