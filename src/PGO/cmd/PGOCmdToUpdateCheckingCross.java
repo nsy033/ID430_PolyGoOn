@@ -1,6 +1,7 @@
 package PGO.cmd;
 
 import PGO.PGO;
+import PGO.PGOEventListener;
 import PGO.PGOPolygon;
 import PGO.PGOPolygonCalcMgr;
 import PGO.PGOPolygonMgr;
@@ -15,13 +16,13 @@ public class PGOCmdToUpdateCheckingCross extends XLoggableCmd {
     // fields
     Point mPt = null;
     ArrayList<PGOPolygon> polygons = null;
-    
+
     // constructor
     private PGOCmdToUpdateCheckingCross(XApp app, Point pt) {
         super(app);
         this.mPt = pt;
     }
-    
+
     public static boolean execute(XApp app, Point pt) {
         PGOCmdToUpdateCheckingCross cmd = new PGOCmdToUpdateCheckingCross(app, pt);
         return cmd.execute();
@@ -31,16 +32,15 @@ public class PGOCmdToUpdateCheckingCross extends XLoggableCmd {
     protected boolean defineCmd() {
         PGO pgo = (PGO) this.mApp;
         pgo.getLogMgr().setPrintOn(true);
-        
         PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
         PGOPolygonCalcMgr polygonCalcMgr = pgo.getPolygonCalcMgr();
         polygons = polygonMgr.getPolygons();
         Line2D.Double line = new Line2D.Double();
         line.setLine((Point2D) this.mPt,
-            (Point2D) polygonMgr.getCurPolygon().getPts().get(0));
+                (Point2D) polygonMgr.getCurPolygon().getPts().get(0));
 
         boolean isContained = false;
-        for (PGOPolygon polygon: polygons) {
+        for (PGOPolygon polygon : polygons) {
             if (polygonCalcMgr.checkContent(this.mPt, polygon)) {
                 isContained = true;
                 break;
@@ -48,17 +48,16 @@ public class PGOCmdToUpdateCheckingCross extends XLoggableCmd {
         }
 
         if (!isContained && !polygonCalcMgr.isCrossed(line, polygons)) {
-            this.mPt = polygonCalcMgr.findNearPt(this.mPt);
+            this.mPt = polygonCalcMgr.findNearPt(this.mPt, pgo.getPolygonMgr().getFixedPts());
             polygonMgr.getCurPolygon().updatePolygon(this.mPt);
         }
-        
-        if (pgo.getEventListener().getMousePrevPt().
-            distance(mPt.getX(), mPt.getY()) > 250.0) {
+
+        if (pgo.getEventListener().getMousePrevPt().distance(mPt.getX(),
+                mPt.getY()) > PGOEventListener.MIN_DISTANCE_FOR_LOGGING) {
             pgo.getEventListener().setMousePrevPt(mPt);
         } else {
             pgo.getLogMgr().setPrintOn(false);
         }
-        
         return true;
     }
 
@@ -68,8 +67,8 @@ public class PGOCmdToUpdateCheckingCross extends XLoggableCmd {
         sb.append(this.getClass().getSimpleName()).append("\t");
         sb.append(this.mPt).append("\t");
         sb.append(this.polygons);
-        
+
         return sb.toString();
     }
-    
+
 }
