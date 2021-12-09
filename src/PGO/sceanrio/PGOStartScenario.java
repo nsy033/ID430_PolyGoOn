@@ -1,8 +1,11 @@
 package PGO.sceanrio;
 
 import PGO.PGO;
-import PGO.PGOPanelMgr;
 import PGO.PGOScene;
+import PGO.cmd.PGOCmdToCalcPolygonColor;
+import PGO.cmd.PGOCmdToGetExtension;
+import PGO.cmd.PGOCmdToGetFile;
+import PGO.cmd.PGOCmdToImportJSON;
 import PGO.cmd.PGOCmdToSetFinalImage;
 import PGO.cmd.PGOCmdToSetImage;
 import java.awt.Point;
@@ -59,26 +62,52 @@ public class PGOStartScenario extends XScenario {
 
     @Override
     protected void addScenes() {
-        this.addScene(PGOStartScenario.ImageReadyScene.createSingleton(this));
+        this.addScene(PGOStartScenario.FileReadyScene.createSingleton(this));
     }
 
-    public static class ImageReadyScene extends PGOScene {
+    public static class FileReadyScene extends PGOScene {
         // singleton pattern
-        private static ImageReadyScene mSingleton = null;
+        private static FileReadyScene mSingleton = null;
 
-        public static ImageReadyScene createSingleton(XScenario scenario) {
-            assert (ImageReadyScene.mSingleton == null);
-            ImageReadyScene.mSingleton = new ImageReadyScene(scenario);
-            return ImageReadyScene.mSingleton;
+        public static FileReadyScene createSingleton(XScenario scenario) {
+            assert (FileReadyScene.mSingleton == null);
+            FileReadyScene.mSingleton = new FileReadyScene(scenario);
+            return FileReadyScene.mSingleton;
         }
 
-        public static ImageReadyScene getSingleton() {
-            assert (ImageReadyScene.mSingleton != null);
-            return ImageReadyScene.mSingleton;
+        public static FileReadyScene getSingleton() {
+            assert (FileReadyScene.mSingleton != null);
+            return FileReadyScene.mSingleton;
         }
 
-        private ImageReadyScene(XScenario scenario) {
+        private FileReadyScene(XScenario scenario) {
             super(scenario);
+        }
+
+        // field
+        private boolean mCtrlPressed = false;
+
+        private String mFilePath = null;
+        public String getFilePath() {
+            return this.mFilePath;
+        }
+        public void setFilePath(String path) {
+            this.mFilePath = path;
+        }
+        private String mFileName = null;
+        public String getFileName() {
+            return this.mFileName;
+        }
+        public void setFileName(String name) {
+            this.mFileName = name;
+        }
+
+        private String mExtenstion = null;
+        public String getExtenstion() {
+            return this.mExtenstion;
+        }
+        public void setExtenstion(String ext) {
+            this.mExtenstion = ext;
         }
 
         @Override
@@ -95,6 +124,22 @@ public class PGOStartScenario extends XScenario {
 
         @Override
         public void handleKeyDown(KeyEvent e) {
+            PGO pgo = (PGO) this.mScenario.getApp();
+            int code = e.getKeyCode();
+
+            switch (code) {
+                case KeyEvent.VK_CONTROL:
+                    this.mCtrlPressed = true;
+                    break;
+                case KeyEvent.VK_I:
+                    if (this.mCtrlPressed) {
+                        PGOCmdToImportJSON.execute(pgo);
+                        XCmdToChangeScene.execute(pgo,
+                            PGODefaultScenario.ReadyScene.getSingleton(),
+                            null);
+                    }
+                    break;
+            }
         }
 
         @Override
@@ -111,12 +156,31 @@ public class PGOStartScenario extends XScenario {
                                 PGODefaultScenario.ReadyScene.getSingleton(), null);
                     }
                     break;
+                case KeyEvent.VK_CONTROL:
+                    this.mCtrlPressed = false;
+                    break;
             }
         }
 
         public void handleDragDrop(DropTargetDropEvent ev) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            PGOCmdToSetImage.execute(pgo, ev);
+            PGOCmdToGetFile.execute(pgo, ev);
+            PGOCmdToGetExtension.execute(pgo);
+            switch (this.mExtenstion.toLowerCase()) {
+                case "png":
+                case "jpg":
+                case "jpeg":
+                    PGOCmdToSetImage.execute(pgo);
+                    break;
+                case "json":
+                    PGOCmdToImportJSON.execute(pgo);
+                    PGOCmdToSetFinalImage.execute(pgo);
+                    PGOCmdToCalcPolygonColor.execute(pgo);
+                    XCmdToChangeScene.execute(pgo,
+                            PGODefaultScenario.ReadyScene.getSingleton(), null);
+                    
+                    break;
+            }
         }
 
         @Override

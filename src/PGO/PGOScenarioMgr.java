@@ -22,6 +22,6 @@ public class PGOScenarioMgr extends XScenarioMgr {
 
     @Override
     protected void setInitCurScene() {
-        this.setCurScene(PGOStartScenario.ImageReadyScene.getSingleton());
+        this.setCurScene(PGOStartScenario.FileReadyScene.getSingleton());
     }
 }

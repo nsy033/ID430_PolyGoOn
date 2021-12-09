@@ -33,7 +33,6 @@ public class PGOCmdToUpdateCheckingIntersection extends XLoggableCmd {
     protected boolean defineCmd() {
         PGO pgo = (PGO) this.mApp;
         pgo.getLogMgr().setPrintOn(true);
-
         PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
         PGOPolygonCalcMgr polygonCalcMgr = pgo.getPolygonCalcMgr();
         ArrayList<PGOPolygon> polygons = polygonMgr.getPolygons();
@@ -69,7 +68,6 @@ public class PGOCmdToUpdateCheckingIntersection extends XLoggableCmd {
         } else {
             pgo.getLogMgr().setPrintOn(false);
         }
-
         return true;
     }
 

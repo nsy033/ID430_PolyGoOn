@@ -4,6 +4,7 @@ import PGO.PGO;
 import PGO.PGOScene;
 import PGO.cmd.PGOCmdToAddFirstPt;
 import PGO.cmd.PGOCmdToAskBeforeSave;
+import PGO.cmd.PGOCmdToExportJSON;
 import PGO.cmd.PGOCmdToSetImageVisibility;
 import PGO.cmd.PGOCmdToStartHSBControl;
 import java.awt.Graphics2D;
@@ -121,6 +122,9 @@ public class PGODefaultScenario extends XScenario {
                                 PGOSaveScenario.SaveReadyScene.getSingleton(),
                                 null);
                     }
+                    break;
+                case KeyEvent.VK_E:
+                    PGOCmdToExportJSON.execute(pgo);
                     break;
             }
         }

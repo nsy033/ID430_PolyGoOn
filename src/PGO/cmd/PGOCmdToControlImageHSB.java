@@ -25,7 +25,7 @@ public class PGOCmdToControlImageHSB extends XLoggableCmd {
     @Override
     protected boolean defineCmd() {
         PGO pgo = (PGO) this.mApp;
-        ArrayList<JSlider> hsbSliders = pgo.getPanelMgr().getHSBSliders();
+        ArrayList<JSlider> hsbSliders = pgo.getSliderMgr().getHSBSliders();
         hue = (float) hsbSliders.get(0).getValue() / 360f;
         sat = (float) hsbSliders.get(1).getValue() / 255f;
         bri = (float) hsbSliders.get(2).getValue() / 255f;
