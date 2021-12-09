@@ -162,7 +162,7 @@ public class PGO extends XApp {
         final int originalY = this.mFrame.getLocationOnScreen().y;
         for (int i = 0; i < VIBRATION_LENGTH; i++) {
             try {
-                Thread.sleep(15);
+                Thread.sleep(5);
                 this.mFrame.setLocation(
                         originalX, originalY + VIBRATION_VELOCITY);
                 Thread.sleep(5);

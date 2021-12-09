@@ -1,12 +1,14 @@
 package PGO.sceanrio;
 
 import PGO.PGO;
+import PGO.PGOPanelMgr;
 import PGO.PGOScene;
 import PGO.cmd.PGOCmdToCalcPolygonColor;
 import PGO.cmd.PGOCmdToControlImageHSB;
 import PGO.cmd.PGOCmdToGetExtension;
 import PGO.cmd.PGOCmdToGetFile;
 import PGO.cmd.PGOCmdToImportJSON;
+import PGO.cmd.PGOCmdToInitiate;
 import PGO.cmd.PGOCmdToSetFinalImage;
 import PGO.cmd.PGOCmdToSetImage;
 import java.awt.Point;
@@ -167,6 +169,7 @@ public class PGOStartScenario extends XScenario {
             PGO pgo = (PGO) this.mScenario.getApp();
             PGOCmdToGetFile.execute(pgo, ev);
             PGOCmdToGetExtension.execute(pgo);
+            pgo.getPanelMgr().setImageLoaded(false);
             switch (this.mExtenstion.toLowerCase()) {
                 case "png":
                 case "jpg":
@@ -175,12 +178,15 @@ public class PGOStartScenario extends XScenario {
                     break;
                 case "json":
                     PGOCmdToImportJSON.execute(pgo);
-                    PGOCmdToSetFinalImage.execute(pgo);
-                    PGOCmdToControlImageHSB.execute(pgo);
-                    PGOCmdToCalcPolygonColor.execute(pgo);
-                    XCmdToChangeScene.execute(pgo,
-                            PGODefaultScenario.ReadyScene.getSingleton(), null);
-                    
+                    if (pgo.getPanelMgr().isImageLoaded()) {
+                        PGOCmdToSetFinalImage.execute(pgo);
+                        PGOCmdToControlImageHSB.execute(pgo);
+                        PGOCmdToCalcPolygonColor.execute(pgo);
+                        XCmdToChangeScene.execute(pgo,
+                                PGODefaultScenario.ReadyScene.getSingleton(), null);
+                    } else {
+                        PGOCmdToInitiate.execute(pgo);
+                    }
                     break;
             }
         }
