@@ -3,8 +3,6 @@ package PGO.cmd;
 import PGO.PGO;
 import PGO.PGOPanelMgr;
 import PGO.sceanrio.PGOStartScenario;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 import x.XApp;
 import x.XLoggableCmd;
 
