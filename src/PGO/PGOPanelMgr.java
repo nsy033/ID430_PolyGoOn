@@ -1,23 +1,19 @@
 package PGO;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.dnd.DropTarget;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.Dimension;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
+import java.awt.Image;
+import PGO.sceanrio.PGOStartScenario;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class PGOPanelMgr {
     // fields
+    private PGO pgo = null;
     private JLabel mTextLabel = null;
     public JLabel getTextLabel() {
         return this.mTextLabel;
@@ -55,45 +51,20 @@ public class PGOPanelMgr {
     public void setFilePath(String filepath) {
         this.mFilePath = filepath;
     }
-
-    private ArrayList<PGOChangeListener> mHSBChangeListeners =
-        new ArrayList<PGOChangeListener>();
-    private ArrayList<JPanel> mHSBPanels = new ArrayList<JPanel>();
-    private JPanel mHSBPanel = null;
-    public JPanel getHSBPanel() {
-        return this.mHSBPanel;
-    }
-    private ArrayList<JSlider> mHSBSliders = new ArrayList<JSlider>(); 
-    public ArrayList<JSlider> getHSBSliders() {
-        return this.mHSBSliders;
-    }
+    private String mFileName = null;
     
     // constructor
     public PGOPanelMgr(PGO pgo) {
         // create components
+        this.pgo = pgo;
         this.mTranslucentPane = new JPanel();
         this.mImagePane = new JPanel();
         this.mTextLabel = new JLabel("Drop Image Here");
-        this.mHSBPanel = new JPanel();
-        this.mHSBSliders.add(new JSlider(-360, 360, 0));
-        this.mHSBSliders.add(new JSlider(-255, 255, 0));
-        this.mHSBSliders.add(new JSlider(-255, 255, 0));
-        for (int i = 0; i < 3; i++) {
-            this.mHSBSliders.get(i).setName("" + i);
-            this.mHSBChangeListeners.add(new PGOChangeListener(pgo));
-            this.mHSBPanels.add(new JPanel());
-        }
+        this.mFileName = PGOStartScenario.FileReadyScene.getSingleton().getFileName();
 
         // connect event listeners
         DropTarget dropTarget = new DropTarget(this.mImagePane,
             pgo.getDragListener());
-        PGOEventListener pgoEventListener = pgo.getEventListener();
-        for (int i = 0; i < 3; i++) {
-            JSlider slider = this.mHSBSliders.get(i);
-            slider.addChangeListener(this.mHSBChangeListeners.get(i));
-            slider.addMouseListener(pgoEventListener);
-            slider.addKeyListener(pgoEventListener);
-        }
 
         // build and show visible components
         this.mTranslucentPane.setBackground(new Color(255, 255, 255, 128));
@@ -110,45 +81,67 @@ public class PGOPanelMgr {
         this.mImagePane.setBorder(BorderFactory.createEmptyBorder(
             PGO.EMPTY_BORDER, 0, 0, 0));
 
-        // compose HSBPanel
-        FlowLayout fl = new FlowLayout(FlowLayout.TRAILING);
-        Dimension maximumSize = new Dimension(PGO.SLIDER_WIDTH,
-            PGO.SLIDER_HEIGHT * 3);
-        ArrayList<String> labels = new ArrayList<String>(
-            Arrays.asList("Hue", "Saturation", "Brightness"));
-        for (int i = 0; i < 3; i++) {
-            JPanel nPanel = this.mHSBPanels.get(i);
-            nPanel.add(new JLabel(String.format("%10s", labels.get(i))));
-            nPanel.add(this.mHSBSliders.get(i));
-            nPanel.setMaximumSize(maximumSize);
-            nPanel.setLayout(fl);
-            nPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            nPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
-            
-            this.mHSBPanel.add(nPanel);
-        }
-        this.mHSBPanel.setVisible(false);
-
         // add all panels to PGOFrame
         JFrame pgoFrame = pgo.getFrame();
-        pgoFrame.add(this.mHSBPanel, BorderLayout.SOUTH);
         pgoFrame.add(this.mTranslucentPane, BorderLayout.CENTER);
         pgoFrame.add(this.mImagePane, BorderLayout.CENTER);
     }
 
-    public void setHSBPanelLayout(int axis) {
-        switch (axis) {
-            case 0:
-                FlowLayout fl = new FlowLayout();
-                this.mHSBPanel.setLayout(fl);
-                this.mHSBPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-                this.mHSBPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
-                break;
-            case 1:
-                BoxLayout bl = new BoxLayout(this.mHSBPanel, axis);
-                this.mHSBPanel.setLayout(bl);
-                this.mHSBPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-                break;
+    public void setImageLabel(String path) {
+        PGOStartScenario scenario = PGOStartScenario.getSingleton();
+        PGOPanelMgr panelMgr = pgo.getPanelMgr();
+        PGOSliderMgr sliderMgr = pgo.getSliderMgr();
+
+        Image image = new ImageIcon(path).getImage();
+        pgo.getFrame().setIconImage(image);
+
+        int imgWidth = image.getWidth(null);
+        int imgHeight = image.getHeight(null);
+        double d = Double.min(1280.0 / imgWidth, 700.0 / imgHeight);
+        int width = (int) (imgWidth * d);
+        int height = (int) (imgHeight * d);
+
+        pgo.getFrame().setSize(
+                PGO.DEFAULT_WINDOW_WIDTH,
+                PGO.DEFAULT_WINDOW_HEIGHT);
+        pgo.getFrame().setLocationRelativeTo(null);
+
+        if (width < PGO.MIN_WIDTH || height < PGO.MIN_HEIGHT) {
+            // Do not assign when image has invalid proportion.
+            panelMgr.getImagePane().add(panelMgr.getTextLabel());
+            pgo.getFrame().setLocationRelativeTo(null);
+            scenario.setPrevPath(null);
+            scenario.setPrevImage(null);
+            pgo.vibrate();
+            this.mFileName = "image with invalid proprotion";
+        } else {
+            ImageIcon imageIcon = new ImageIcon(image.getScaledInstance(
+                    width, height, Image.SCALE_DEFAULT));
+            panelMgr.setImageLabel(imageIcon);
+
+            scenario.setPrevImage(new JLabel());
+            scenario.getPrevImage().setIcon(imageIcon);
+
+            pgo.getCanvas2D().setSize(width, height);
+            if (width > PGO.SLIDER_WIDTH * 3) {
+                sliderMgr.setHSBPanelLayout(0);
+                sliderMgr.getHSBPanel().setSize(width, PGO.SLIDER_HEIGHT);
+                sliderMgr.getHSBPanel().setLocation(
+                        0, height + PGO.SLIDER_HEIGHT);
+                pgo.setDeltaFrameHeight(PGO.DELTA_WINDOW_HEIGTH_MIN);
+            } else {
+                sliderMgr.setHSBPanelLayout(1);
+                sliderMgr.getHSBPanel().setSize(width, PGO.SLIDER_HEIGHT * 3);
+                sliderMgr.getHSBPanel().setLocation(
+                        0, height + PGO.SLIDER_HEIGHT * 3);
+                pgo.setDeltaFrameHeight(PGO.DELTA_WINDOW_HEIGTH_MAX);
+            }
+            panelMgr.getTranslucentPane().setSize(width, height);
+            panelMgr.getImagePane().setSize(width, height);
+
+            pgo.getFrame().setSize(width, height + PGO.SLIDER_HEIGHT);
+            pgo.getFrame().setLocationRelativeTo(null);
+            panelMgr.getImagePane().add(scenario.getPrevImage(), JLabel.CENTER);
         }
     }
 }

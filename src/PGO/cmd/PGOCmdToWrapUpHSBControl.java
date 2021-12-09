@@ -19,7 +19,7 @@ public class PGOCmdToWrapUpHSBControl extends XLoggableCmd {
     @Override
     protected boolean defineCmd() {
         PGO pgo = (PGO) this.mApp;
-        pgo.getPanelMgr().getHSBPanel().setVisible(false);
+        pgo.getSliderMgr().getHSBPanel().setVisible(false);
         Dimension prevSize = pgo.getFrame().getSize();
         pgo.getFrame().setSize(prevSize.width,
         prevSize.height - pgo.getDeltaFrameHeight());

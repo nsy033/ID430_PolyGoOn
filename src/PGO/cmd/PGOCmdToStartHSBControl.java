@@ -22,7 +22,7 @@ public class PGOCmdToStartHSBControl extends XLoggableCmd {
         Dimension prevSize = pgo.getFrame().getSize();
         pgo.getFrame().setSize(prevSize.width,
             prevSize.height + pgo.getDeltaFrameHeight());
-        pgo.getPanelMgr().getHSBPanel().setVisible(true);
+        pgo.getSliderMgr().getHSBPanel().setVisible(true);
         return true;
     }
 

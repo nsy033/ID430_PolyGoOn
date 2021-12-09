@@ -130,7 +130,7 @@ public class PGOColorScenario extends XScenario {
         @Override
         public void renderScreenObjects(Graphics2D g2) {
             PGO pgo = (PGO) this.mScenario.getApp();
-            pgo.getPanelMgr().getHSBPanel().setVisible(true);
+            pgo.getSliderMgr().getHSBPanel().setVisible(true);
             pgo.getFrame().revalidate();
         }
 

@@ -106,6 +106,12 @@ public class PGO extends XApp {
         return this.mPanelMgr;
     }
 
+    private PGOSliderMgr mSliderMgr = null;
+
+    public PGOSliderMgr getSliderMgr() {
+        return this.mSliderMgr;
+    }
+
     // constructor
     public PGO() {
         // create components
@@ -137,6 +143,7 @@ public class PGO extends XApp {
 
         // create panelMgr here
         // since it needs creation of other components to be completed
+        this.mSliderMgr = new PGOSliderMgr(this);
         this.mPanelMgr = new PGOPanelMgr(this);
 
         this.mFrame.setSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);

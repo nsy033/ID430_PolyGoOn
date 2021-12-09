@@ -19,8 +19,8 @@ public class PGODragListener implements DropTargetListener {
     public void drop(DropTargetDropEvent ev) {
         // Get dropped img and add to label
         PGOScene curScene = (PGOScene) this.mPGO.getScenarioMgr().getCurScene();
-        if (curScene == PGOStartScenario.ImageReadyScene.getSingleton()) {
-            PGOStartScenario.ImageReadyScene.getSingleton().handleDragDrop(ev);
+        if (curScene == PGOStartScenario.FileReadyScene.getSingleton()) {
+            PGOStartScenario.FileReadyScene.getSingleton().handleDragDrop(ev);
         }
         this.mPGO.getCanvas2D().repaint();
     }
