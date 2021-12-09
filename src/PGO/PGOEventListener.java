@@ -22,6 +22,13 @@ public class PGOEventListener implements MouseListener, MouseMotionListener,
     public Point getMouseLastPt() {
         return this.mMouseLastPt;
     }
+    private Point mMousePrevPt = null;
+    public Point getMousePrevPt() {
+        return this.mMousePrevPt;
+    }
+    public void setMousePrevPt(Point pt) {
+        this.mMousePrevPt = pt;
+    }
     private java.util.Timer mTimer = null;
     
     // constructor
@@ -35,6 +42,7 @@ public class PGOEventListener implements MouseListener, MouseMotionListener,
         curScene.handleMousePress(e);
         this.mMousePressedPt = e.getPoint();
         this.mMouseLastPt = e.getPoint();
+        this.mMousePrevPt = e.getPoint();
         this.mPGO.getCanvas2D().repaint();
         
         if (curScene == PGODefaultScenario.ReadyScene.getSingleton()) {

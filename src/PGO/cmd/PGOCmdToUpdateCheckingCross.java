@@ -30,6 +30,7 @@ public class PGOCmdToUpdateCheckingCross extends XLoggableCmd {
     @Override
     protected boolean defineCmd() {
         PGO pgo = (PGO) this.mApp;
+        pgo.getLogMgr().setPrintOn(true);
         
         PGOPolygonMgr polygonMgr = pgo.getPolygonMgr();
         PGOPolygonCalcMgr polygonCalcMgr = pgo.getPolygonCalcMgr();
@@ -49,6 +50,13 @@ public class PGOCmdToUpdateCheckingCross extends XLoggableCmd {
         if (!isContained && !polygonCalcMgr.isCrossed(line, polygons)) {
             this.mPt = polygonCalcMgr.findNearPt(this.mPt);
             polygonMgr.getCurPolygon().updatePolygon(this.mPt);
+        }
+        
+        if (pgo.getEventListener().getMousePrevPt().
+            distance(mPt.getX(), mPt.getY()) > 250.0) {
+            pgo.getEventListener().setMousePrevPt(mPt);
+        } else {
+            pgo.getLogMgr().setPrintOn(false);
         }
         
         return true;
