@@ -3,6 +3,7 @@ package PGO.sceanrio;
 import PGO.PGO;
 import PGO.PGOScene;
 import PGO.cmd.PGOCmdToCalcPolygonColor;
+import PGO.cmd.PGOCmdToControlImageHSB;
 import PGO.cmd.PGOCmdToGetExtension;
 import PGO.cmd.PGOCmdToGetFile;
 import PGO.cmd.PGOCmdToImportJSON;
@@ -175,6 +176,7 @@ public class PGOStartScenario extends XScenario {
                 case "json":
                     PGOCmdToImportJSON.execute(pgo);
                     PGOCmdToSetFinalImage.execute(pgo);
+                    PGOCmdToControlImageHSB.execute(pgo);
                     PGOCmdToCalcPolygonColor.execute(pgo);
                     XCmdToChangeScene.execute(pgo,
                             PGODefaultScenario.ReadyScene.getSingleton(), null);

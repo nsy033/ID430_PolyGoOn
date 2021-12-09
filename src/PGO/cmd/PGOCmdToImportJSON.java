@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import PGO.PGO;
 import PGO.PGOPanelMgr;
 import PGO.PGOPolygon;
+import PGO.PGOSliderMgr;
 import PGO.sceanrio.PGOStartScenario;
 import x.XApp;
 import x.XLoggableCmd;
@@ -54,9 +55,21 @@ public class PGOCmdToImportJSON extends XLoggableCmd {
         PGO pgo = (PGO) this.mApp;
         PGOStartScenario scenario = PGOStartScenario.getSingleton();
         PGOPanelMgr panelMgr = pgo.getPanelMgr();
-        String path = (String) image.get("path");
+        PGOSliderMgr sliderMgr = pgo.getSliderMgr();
 
-        System.out.println(path);
+        String path = (String) image.get("path");
+        int[] hsbs = {
+            (int) (long) image.get("hue"),
+            (int) (long) image.get("sat"),
+            (int) (long) image.get("bri")
+        };
+
+        for (int i = 0; i < 3; i++) {
+            sliderMgr.getHSBSliders().get(i).setValueIsAdjusting(true);
+            sliderMgr.getHSBSliders().get(i).setValue(hsbs[i]);
+            sliderMgr.getHSBSliders().get(i).setValueIsAdjusting(false);
+        }
+        System.out.println(sliderMgr.getHSBSliders().get(0).getValue());
 
         if (scenario.getPrevImage() == null) {
             panelMgr.getImagePane().remove(panelMgr.getTextLabel());
