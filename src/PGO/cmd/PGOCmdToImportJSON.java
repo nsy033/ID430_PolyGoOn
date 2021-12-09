@@ -69,12 +69,12 @@ public class PGOCmdToImportJSON extends XLoggableCmd {
             sliderMgr.getHSBSliders().get(i).setValue(hsbs[i]);
             sliderMgr.getHSBSliders().get(i).setValueIsAdjusting(false);
         }
-        System.out.println(sliderMgr.getHSBSliders().get(0).getValue());
 
         if (scenario.getPrevImage() == null) {
             panelMgr.getImagePane().remove(panelMgr.getTextLabel());
             scenario.setPrevPath(path);
             panelMgr.setImageLabel(path);
+            pgo.getCanvas2D().repaint();
         } else {
             if (!scenario.getPrevPath().equals(path)) {
                 panelMgr.getImagePane().remove(scenario.getPrevImage());
