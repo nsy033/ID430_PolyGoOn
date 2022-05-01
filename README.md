@@ -17,6 +17,28 @@
 - 전체 폴리곤 아트의 HSB 색상을 변경
 - 완성된 폴리곤 아트를 이미지 파일로 저장
 
+# Operations
+
+To start polygon art work, drag reference image to background and press enter.
+
+## Mouse Events
+| Action | Description |
+|:---:|:---:|
+| tap | add new vertex for polygon |
+| drag | move new vertex |
+| long press polygon | select polygon <br> delete selected polygon if it is dragged to conner |
+| double tap / ctrl + tap | split existing polygon |
+
+## Key Bindings
+| Key | Description |
+|:---:|:---:|
+| c | enter color adjust mode |
+| v | hide / show image |
+| shift | enter deform mode <br> drag vertex - move existing vertex |
+| shift + ctrl | enter separate mode <br> drag vertex - separate vertex from merged vertices |
+| ctrl + s → enter | save as png image |
+| ctrl + e → enter | export as json file |
+
 # Demo Video
 
 [https://youtu.be/CjVw0tOz9x4](https://youtu.be/CjVw0tOz9x4)
