@@ -41,4 +41,9 @@ To start polygon art work, drag reference image to background and press enter.
 
 # Demo Video
 
-[https://youtu.be/CjVw0tOz9x4](https://youtu.be/CjVw0tOz9x4)
+<a href="https://www.youtube.com/watch?v=CjVw0tOz9x4">
+  <img src=https://img.youtube.com/vi/CjVw0tOz9x4/maxresdefault.jpg  width="480" height="320"/>
+</a>
+
+https://youtu.be/CjVw0tOz9x4
+
